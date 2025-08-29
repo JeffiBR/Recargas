@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     // IMPORTANTE: Substitua pela URL do seu back-end no Render!
-    const BACKEND_URL = 'https://seu-backend.onrender.com'; // <-- MUDE AQUI!
+    const BACKEND_URL = 'https://thuder-recargas-backend.onrender.com'; // <-- MUDE AQUI!
     
     let adminPassword = null;
     let currentConfig = {};
@@ -84,4 +84,5 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     loadSettings();
+
 });

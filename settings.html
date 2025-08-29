@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configurações da Página - Thuder Recargas</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; margin: 0; background-color: #f8f9fa; color: #212529; }
+        .header { display: flex; justify-content: space-between; align-items: center; padding: 20px; background-color: white; border-bottom: 1px solid #dee2e6; }
+        h1 { margin: 0; font-size: 24px; }
+        .container { padding: 20px; max-width: 900px; margin: 0 auto; }
+        .form-section { background-color: white; padding: 25px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        h2 { margin-top: 0; border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 20px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input[type="text"], textarea { width: 100%; box-sizing: border-box; padding: 10px; border-radius: 5px; border: 1px solid #ccc; margin-bottom: 15px; font-size: 16px; }
+        textarea { min-height: 150px; resize: vertical; font-family: monospace; }
+        .save-btn { background-color: #007bff; color: white; padding: 12px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; float: right; }
+        .nav-links a { text-decoration: none; color: #007bff; font-weight: 500; }
+        .recharge-options-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+        @media (max-width: 768px) { .recharge-options-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Configurações do Site</h1>
+        <div class="nav-links">
+            <a href="admin.html">« Voltar para Pedidos</a>
+        </div>
+    </div>
+    <div class="container">
+        <form id="settings-form">
+            <div class="form-section">
+                <h2>Textos da Página</h2>
+                <label for="headerTitle">Título Principal</label>
+                <input type="text" id="headerTitle">
+                <label for="headerSubtitle">Subtítulo</label>
+                <input type="text" id="headerSubtitle">
+                <label for="footerWarning">Aviso do Rodapé (24h)</label>
+                <input type="text" id="footerWarning">
+            </div>
+            <div class="form-section">
+                <h2>Configurações PIX</h2>
+                <label for="pixKey">Chave PIX (Telefone com +55)</label>
+                <input type="text" id="pixKey">
+                <label for="pixName">Nome do Beneficiário</label>
+                <input type="text" id="pixName">
+            </div>
+            <div class="form-section">
+                <h2>Valores das Recargas (um valor por linha)</h2>
+                <div class="recharge-options-grid">
+                    <div>
+                        <label for="options-tim">TIM</label>
+                        <textarea id="options-tim"></textarea>
+                    </div>
+                    <div>
+                        <label for="options-vivo">VIVO</label>
+                        <textarea id="options-vivo"></textarea>
+                    </div>
+                    <div>
+                        <label for="options-claro">CLARO</label>
+                        <textarea id="options-claro"></textarea>
+                    </div>
+                </div>
+            </div>
+            <button id="save-settings-btn" type="submit" class="save-btn">Salvar Alterações</button>
+        </form>
+    </div>
+    <script src="settings.js"></script>
+</body>
+</html>

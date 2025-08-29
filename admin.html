@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Administrativo - Thuder Recargas</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; margin: 0; background-color: #f8f9fa; color: #212529; }
+        .main-header { display: flex; justify-content: space-between; align-items: center; padding: 20px; background-color: white; border-bottom: 1px solid #dee2e6; }
+        h1 { margin: 0; }
+        .table-container { padding: 20px; overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; background-color: white; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        th, td { border: 1px solid #dee2e6; padding: 12px 15px; text-align: left; vertical-align: middle; }
+        th { background-color: #f2f2f2; font-size: 14px; text-transform: uppercase; color: #495057; }
+        tr:nth-child(even) { background-color: #f9f9f9; }
+        td { font-size: 15px; }
+        td[contenteditable="true"] { background-color: #fffbe6; outline-color: #007bff; }
+        tr.editing { background-color: #fffbe6 !important; }
+        select, textarea, button, input { font-family: inherit; font-size: 14px; padding: 8px 10px; border-radius: 5px; border: 1px solid #ccc; box-sizing: border-box; }
+        textarea { width: 100%; min-height: 60px; resize: vertical; }
+        button { cursor: pointer; color: white; border: none; transition: background-color 0.2s; }
+        .action-buttons button { margin-right: 5px; margin-bottom: 5px; }
+        .save-btn { background-color: #28a745; }
+        .delete-btn { background-color: #dc3545; }
+        .edit-btn, .add-btn, .settings-btn { background-color: #007bff; }
+        .nav-links { display: flex; align-items: center; gap: 15px; }
+        .nav-links a { text-decoration: none; color: #007bff; font-weight: 500; }
+    </style>
+</head>
+<body>
+    <div class="main-header">
+        <h1>Painel de Pedidos</h1>
+        <div class="nav-links">
+            <a href="settings.html">Editar Conteúdo do Site</a>
+            <button id="add-recharge-btn" class="add-btn">Adicionar Pedido</button>
+        </div>
+    </div>
+    <div class="table-container">
+        <table id="recargas-table">
+            <thead>
+                <tr>
+                    <th>Data/Hora</th>
+                    <th>Cliente</th>
+                    <th>Telefone</th>
+                    <th>Pedido</th>
+                    <th>Senha App</th>
+                    <th>Status</th>
+                    <th>Comentário</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <div id="add-recharge-modal" style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.5);">
+        <div style="background-color: #fefefe; margin: 10% auto; padding: 20px; border: 1px solid #888; width: 80%; max-width: 500px; border-radius: 8px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #dee2e6; padding-bottom: 10px; margin-bottom: 20px;">
+                <h2>Adicionar Nova Recarga</h2>
+                <span id="close-modal-btn" style="color: #aaa; font-size: 28px; font-weight: bold; cursor: pointer;">&times;</span>
+            </div>
+            <form id="add-recharge-form">
+                <div style="margin-bottom: 15px;"><label for="nome" style="display: block; margin-bottom: 5px;">Nome</label><input type="text" id="add-nome" required style="width: 100%;"></div>
+                <div style="margin-bottom: 15px;"><label for="telefone" style="display: block; margin-bottom: 5px;">Telefone</label><input type="text" id="add-telefone" required style="width: 100%;"></div>
+                <div style="margin-bottom: 15px;"><label for="operadora" style="display: block; margin-bottom: 5px;">Operadora</label><select id="add-operadora" required style="width: 100%;"><option value="">Selecione</option><option value="Tim">Tim</option><option value="Vivo">Vivo</option><option value="Claro">Claro</option></select></div>
+                <div style="margin-bottom: 15px;"><label for="recarga_selecionada" style="display: block; margin-bottom: 5px;">Pedido (Valor)</label><input type="text" id="add-recarga_selecionada" placeholder="Ex: R$20,00 PAGA R$15,00" required style="width: 100%;"></div>
+                <div style="margin-bottom: 15px;"><label for="senha_app" style="display: block; margin-bottom: 5px;">Senha do App</label><input type="text" id="add-senha_app" style="width: 100%;"></div>
+                <button type="submit" class="add-btn">Adicionar</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="admin.js"></script>
+</body>
+</html>

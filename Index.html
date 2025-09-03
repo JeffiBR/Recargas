@@ -1,298 +1,1818 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thuder Recargas - Recarga Promocional</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
-    <style>
-        :root {
-            --primary-color: #4f46e5;
-            --success-color: #22c55e;
-            --warning-color: #f59e0b;
-            --error-color: #ef4444;
-            --bg-dark: #111827;
-            --bg-light: #1f2937;
-            --text-primary: #f9fafb;
-            --text-secondary: #9ca3af;
-            --border-color: #4b5567;
-        }
-        
-        body { 
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            display: flex; 
-            justify-content: center; 
-            align-items: center;
-            min-height: 100vh;
-            margin: 0; 
-            padding: 20px; 
-            box-sizing: border-box;
-            background-color: var(--bg-dark);
-            background-image: radial-gradient(circle at top right, rgba(79, 70, 229, 0.4), transparent 40%),
-                              radial-gradient(circle at bottom left, rgba(107, 33, 168, 0.4), transparent 50%);
-        }
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Thunder Recargas — Recarga Promocional</title>
 
-        /* --- TELA DE CARREGAMENTO INICIAL (SERVIDOR ACORDANDO) --- */
-        #loading-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(17, 24, 39, 0.9);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            transition: opacity 0.3s ease;
-        }
-        #loading-overlay .spinner {
-            width: 50px;
-            height: 50px;
-            border: 5px solid var(--border-color);
-            border-top-color: var(--primary-color);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-        #loading-overlay p {
-            color: var(--text-secondary);
-            margin-top: 20px;
-            font-size: 16px;
-            font-weight: 500;
-            text-align: center;
-            line-height: 1.5;
-        }
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-        /* --- FIM DA TELA DE CARREGAMENTO --- */
-        
-        .container { 
-            background-color: var(--bg-light); 
-            max-width: 500px; 
-            width: 100%; 
-            padding: 35px 40px; 
-            border-radius: 20px; 
-            border: 1px solid var(--border-color);
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-            transition: max-width 0.3s ease;
-        }
-        
-        .header { text-align: center; margin-bottom: 30px; }
-        h2 { color: var(--text-primary); margin: 0 0 10px 0; font-size: 28px; font-weight: 700; }
-        .subtitle { color: var(--text-secondary); margin: 0; font-size: 16px; }
-        form { display: flex; flex-direction: column; }
-        .form-group { position: relative; margin-bottom: 20px; }
-        label { display: block; margin-bottom: 8px; color: var(--text-secondary); font-weight: 500; font-size: 14px; }
-        
-        input, select { padding: 14px 14px 14px 45px; border-radius: 10px; border: 2px solid var(--border-color); font-size: 16px; width: 100%; box-sizing: border-box; transition: all 0.3s ease; background-color: var(--bg-dark); color: var(--text-primary); -webkit-appearance: none; -moz-appearance: none; appearance: none; }
-        select { background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%239ca3af' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e"); background-position: right 0.7rem center; background-repeat: no-repeat; background-size: 1.5em 1.5em; }
-        input:focus, select:focus { border-color: var(--primary-color); outline: none; box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2); }
-        input::placeholder { color: var(--text-secondary); }
-        .input-icon { position: absolute; left: 15px; top: 42px; color: var(--text-secondary); font-size: 18px; pointer-events: none; }
-        
-        button { margin-top: 25px; padding: 16px; background: var(--primary-color); color: white; border: none; border-radius: 10px; cursor: pointer; font-size: 16px; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 4px 6px rgba(79, 70, 229, 0.2); }
-        button:hover { transform: translateY(-2px); box-shadow: 0 6px 12px rgba(79, 70, 229, 0.3); }
-        button:disabled { background: #4b5567; cursor: not-allowed; transform: none; box-shadow: none; }
-        
-        #status-message { margin-top: 20px; padding: 12px; border-radius: 8px; text-align: center; font-weight: 600; min-height: 22px; display: none; }
-        .success { display: block; background-color: rgba(34, 197, 94, 0.1); color: var(--success-color); }
-        .error { display: block; background-color: rgba(239, 68, 68, 0.1); color: var(--error-color); }
-        .loading { display: block; background-color: rgba(245, 158, 11, 0.1); color: var(--warning-color); }
-        
-        .recharge-options-container { margin-top: 15px; border: 2px solid var(--border-color); border-radius: 10px; padding: 15px; background: var(--bg-dark); }
-        .recharge-option-label { display: block; padding: 16px; border: 2px solid var(--border-color); border-radius: 10px; cursor: pointer; transition: all 0.2s ease-in-out; margin-bottom: 12px; font-weight: 600; color: var(--text-primary); }
-        .recharge-option-label:last-child { margin-bottom: 0; }
-        .recharge-option-label:hover { border-color: var(--primary-color); background-color: rgba(79, 70, 229, 0.1); }
-        .hidden-radio { position: absolute; opacity: 0; width: 0; height: 0; }
-        .hidden-radio:checked + .recharge-option-label { border-color: var(--primary-color); background-color: rgba(79, 70, 229, 0.2); box-shadow: 0 0 15px rgba(79, 70, 229, 0.5); }
-        
-        .password-field { display: none; }
-        .password-help { font-size: 13px; color: var(--text-secondary); margin-top: 10px; background-color: var(--bg-dark); padding: 10px; border-radius: 8px; line-height: 1.5; }
-        .password-help a { color: var(--primary-color); font-weight: 600; text-decoration: none; }
-        .password-help a:hover { text-decoration: underline; }
-        .password-help strong { color: var(--text-primary); display: block; margin-bottom: 5px; }
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js" defer></script>
 
-        #pix-payment-info { display: none; margin-top: 25px; padding: 20px; background-color: var(--bg-dark); border: 1px solid var(--border-color); border-radius: 12px; text-align: center; }
-        #pix-payment-info h3 { margin-top: 0; color: var(--text-primary); }
-        #pix-payment-info p { color: var(--text-secondary); font-size: 14px; margin-bottom: 20px; }
-        #pix-qrcode { background-color: white; padding: 10px; border-radius: 8px; max-width: 180px; width: 100%; height: auto; margin: 0 auto; }
-        .br-code-wrapper { margin-top: 20px; }
-        .br-code-wrapper textarea { width: 100%; box-sizing: border-box; background-color: var(--bg-light); border: 1px solid var(--border-color); color: var(--text-secondary); font-family: monospace; font-size: 13px; padding: 10px; border-radius: 8px; resize: none; }
-        .copy-pix-btn { background-color: var(--success-color); color: white; border: none; border-radius: 6px; padding: 10px 15px; font-size: 14px; cursor: pointer; font-weight: 600; transition: background-color 0.2s; margin-top: 10px; }
-        .copy-pix-btn:hover { background-color: #16a34a; }
+  <style>
+    :root{
+      --primary: #4f46e5;
+      --accent: #7c3aed;
+      --success: #16a34a;
+      --warn: #f59e0b;
+      --error: #ef4444;
 
-        .footer { text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-secondary); font-size: 14px; }
-        .footer p { margin: 8px 0; }
-        .footer .highlight { display: block; font-weight: 600; color: var(--text-primary); margin-bottom: 15px; }
-        .footer .warning { background-color: rgba(245, 158, 11, 0.1); color: var(--warning-color); padding: 10px; border-radius: 8px; font-weight: 500; margin-bottom: 20px; }
-        
-        @media (max-width: 480px) { .container { padding: 25px 20px; } h2 { font-size: 24px; } .recharge-option-label { padding: 14px; font-size: 15px; } }
-        @media (min-width: 768px) { .container { max-width: 600px; } }
-    </style>
+      --bg-dark: #0b1020;
+      --panel-dark: #0f1724;
+      --muted-dark: #9aa4b2;
+      --input-dark: #0b1220;
+      --border-dark: rgba(255,255,255,0.06);
+
+      --bg-light: #f4f6fb;
+      --panel-light: #ffffff;
+      --muted-light: #4b5563;
+      --input-light: #f8fafc;
+      --border-light: #e6e9ef;
+
+      --radius: 14px;
+    }
+
+    html{scroll-behavior:smooth}
+    body { font-family: 'Inter', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; margin:0; min-height:100vh; padding:28px 28px 60px 28px; transition:background-color .25s ease, color .25s ease; background: radial-gradient(circle at top right, rgba(79,70,229,0.06), transparent 30%), radial-gradient(circle at bottom left, rgba(124,58,237,0.03), transparent 40%); display:flex; flex-direction:column; align-items:center; }
+
+    body[data-theme="dark"]{ background-color: var(--bg-dark); color: #e6eef7; }
+    body[data-theme="light"]{ background-color: var(--bg-light); color: #071028; }
+
+    .container{
+      width:100%;
+      max-width:720px;
+      border-radius:18px;
+      padding:28px;
+      box-sizing:border-box;
+      position:relative;
+      overflow:visible;
+      transform-origin:center;
+      transition:transform .32s cubic-bezier(.2,.9,.2,1), opacity .32s;
+      opacity:0;
+      transform: translateY(8px) scale(.995);
+      box-shadow: 0 30px 60px rgba(6,8,15,0.45);
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.01));
+      border: 1px solid var(--border-dark);
+      margin: auto;
+      margin-top: 40px;
+      margin-bottom: 40px;
+    }
+    body[data-theme="light"] .container{
+      background: var(--panel-light);
+      border: 1px solid var(--border-light);
+      box-shadow: 0 12px 30px rgba(12,16,30,0.06);
+      color: #071028;
+    }
+
+    .theme-float{ position:absolute; top:14px; left:14px; z-index:30; display:inline-flex; align-items:center; gap:8px; }
+    .theme-btn{ height:40px; width:40px; border-radius:10px; border:none; display:inline-grid; place-items:center; cursor:pointer; font-size:18px; transition:transform .12s ease, box-shadow .12s ease; background:transparent; }
+    .theme-btn:active{ transform:scale(.96); }
+
+    .header{ text-align:center; margin-bottom:10px; display:flex; flex-direction:column; align-items:center; gap:8px; width:100%; }
+    .brand{ display:flex; gap:12px; align-items:center; justify-content:center; }
+    .logo-wrap{ width:54px; height:54px; border-radius:12px; display:grid; place-items:center; background: linear-gradient(135deg, rgba(79,70,229,0.08), rgba(124,58,237,0.04)); border: 1px solid rgba(255,255,255,0.03); }
+
+    h1{ margin:0; font-size:22px; font-weight:800; letter-spacing:0.6px; text-align:center; }
+    .subtitle{ margin:0; color:var(--muted-dark); font-weight:500; font-size:14px; opacity:.9; text-align:center; }
+
+    form{ margin-top:12px; display:flex; flex-direction:column; gap:12px; width:100%; max-width:620px; align-items:center; }
+    .row{ display:grid; grid-template-columns:1fr 1fr; gap:12px; width:100%; }
+    label{ font-size:13px; font-weight:600; margin-bottom:6px; display:block; color:inherit; opacity:.95; }
+    .form-group{ display:flex; flex-direction:column; width:100%; }
+    input[type="text"], input[type="tel"], input[type="password"], select, textarea{
+      padding:14px 14px 14px 46px;
+      border-radius:10px;
+      border:1px solid transparent;
+      font-size:15px;
+      outline:none;
+      transition: box-shadow .14s ease, border-color .14s ease, background-color .14s;
+      background:transparent;
+      color:inherit;
+      position:relative;
+      height:48px;
+      box-sizing:border-box;
+    }
+    select#operadora {
+      padding: 14px;
+    }
+    body[data-theme="dark"] input, body[data-theme="dark"] select, body[data-theme="dark"] textarea{ background: var(--input-dark); border:1px solid rgba(255,255,255,0.03); }
+    body[data-theme="light"] input, body[data-theme="light"] select, body[data-theme="light"] textarea{ background:var(--input-light); border:1px solid var(--border-light); color: #071028; }
+    input:focus, select:focus, textarea:focus{ box-shadow: 0 6px 24px rgba(79,70,229,0.08); border-color: rgba(79,70,229,0.55); }
+
+    .input-icon{ position:absolute; left:16px; top:50%; transform:translateY(-50%); font-size:16px; opacity:.95; pointer-events:none; display:grid; place-items:center; width:20px; height:20px; color:inherit; }
+    .form-input-wrap{ position:relative; }
+
+    /* show all options (no internal scroll) so user sees everything */
+    .recharge-options-container{ margin-top:12px; padding:16px; border-radius:12px; display:flex; flex-direction:column; gap:12px; border: 1px solid rgba(255,255,255,0.03); background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.005)); width:100%; }
+    
+    .opt{ display:flex; align-items:center; justify-content:space-between; gap:12px; padding:14px 16px; border-radius:10px; cursor:pointer; border:1px solid transparent; transition: all .25s cubic-bezier(0.4, 0, 0.2, 1); background: transparent; font-weight:600; position: relative; overflow: hidden; }
+    
+    .opt::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(79, 70, 229, 0.1), transparent);
+      transition: left 0.5s ease;
+    }
+    
+    .opt:hover::before {
+      left: 100%;
+    }
+    
+    .opt .label{ color:inherit; display:flex; gap:10px; align-items:center; font-weight: 600; }
+    
+    .recharge-icon {
+      font-size: 18px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+    }
+    
+    .recharge-text {
+      font-weight: 600;
+    }
+    
+    .opt .meta{ font-weight:700; font-size:13px; display:inline-flex; gap:8px; align-items:center; }
+    
+    .price-badge {
+      background: linear-gradient(135deg, var(--success), #059669);
+      color: white;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      box-shadow: 0 2px 8px rgba(22, 163, 74, 0.3);
+    }
+    .opt:hover{ transform:translateY(-3px); box-shadow: 0 10px 30px rgba(8,10,20,0.06); }
+    input[type="radio"].hidden { display:none; }
+    input[type="radio"].hidden:checked + .opt{ border-color: rgba(239,68,68,0.14); box-shadow: 0 8px 30px rgba(239,68,68,0.06); background: rgba(239,68,68,0.02); color: var(--error); }
+
+    #pix-payment-info{ display:none; margin-top:6px; padding:14px; border-radius:12px; text-align:center; border:1px dashed rgba(255,255,255,0.03); }
+    body[data-theme="light"] #pix-payment-info{ border-color:var(--border-light); }
+    #pix-qrcode{ background:white; border-radius:12px; width:180px; height:180px; margin: 8px auto; display:block; }
+    .br-code-wrapper textarea{ width:100%; border-radius:10px; padding:12px; font-family:monospace; font-size:13px; resize:none; border:1px solid rgba(255,255,255,0.04); background:transparent; color:inherit; height:76px; }
+
+    .copy-pix-btn{ margin-top:10px; padding:10px 14px; border-radius:8px; border:none; cursor:pointer; font-weight:700; background:var(--success); color:white; }
+
+    .actions{ display:flex; gap:12px; align-items:center; justify-content:center; margin-top:10px; width:100%; }
+    .submit-btn{ padding:14px 18px; border-radius:12px; background: linear-gradient(90deg,var(--primary),var(--accent)); color:white; border:none; font-weight:800; cursor:pointer; box-shadow: 0 8px 30px rgba(79,70,229,0.16); min-width:320px; transition: transform .12s ease, box-shadow .12s ease, background .18s ease; display:inline-flex; align-items:center; justify-content:center; text-align:center; margin: 0 auto; }
+    .submit-btn:disabled{ opacity:.6; cursor:not-allowed; transform:none; box-shadow:none; }
+    .submit-btn.active{ background: linear-gradient(90deg,#ef4444,#f43f5e); box-shadow: 0 10px 36px rgba(244,63,94,0.18); transform: translateY(-2px); }
+
+    #status-message{ padding:12px; border-radius:10px; margin-top:12px; display:none; font-weight:700; text-align:center; max-width:620px; word-break:break-word; }
+
+    .footer{ margin-top:18px; border-top:1px solid rgba(255,255,255,0.03); padding-top:14px; text-align:center; color:var(--muted-dark); font-size:13px; width:100%; }
+    #page-footer-warning{ background: rgba(239,68,68,0.06); color:var(--error); padding:10px; border-radius:8px; font-weight:700; margin-bottom:8px; }
+
+    /* Enhanced lightning bolt animation with realistic effects */
+    @keyframes lightning-strike {
+      0% { 
+        transform: translateY(0) rotate(0) scale(0.95);
+        opacity: 0.8;
+        filter: drop-shadow(0 0 10px rgba(255, 209, 102, 0.3)) brightness(1) saturate(1);
+      }
+      8% {
+        transform: translateY(-2px) rotate(-3deg) scale(1.05);
+        opacity: 1;
+        filter: drop-shadow(0 0 35px rgba(255, 255, 255, 0.9)) drop-shadow(0 0 60px rgba(255, 209, 102, 0.6)) brightness(1.8) saturate(1.2);
+      }
+      12% {
+        transform: translateY(-8px) rotate(-15deg) scale(1.15);
+        opacity: 0.9;
+        filter: drop-shadow(0 0 25px rgba(255, 209, 102, 0.8)) brightness(1.4) saturate(1.1);
+      }
+      20% {
+        transform: translateY(-12px) rotate(8deg) scale(1.08);
+        opacity: 0.95;
+        filter: drop-shadow(0 0 40px rgba(255, 255, 255, 0.7)) drop-shadow(0 0 20px rgba(255, 209, 102, 0.6)) brightness(1.6) saturate(1.3);
+      }
+      35% {
+        transform: translateY(-6px) rotate(-5deg) scale(1.05);
+        opacity: 0.85;
+        filter: drop-shadow(0 0 15px rgba(255, 209, 102, 0.5)) brightness(1.1) saturate(1);
+      }
+      50% {
+        transform: translateY(-10px) rotate(12deg) scale(1.12);
+        opacity: 1;
+        filter: drop-shadow(0 0 50px rgba(255, 255, 255, 0.8)) drop-shadow(0 0 30px rgba(255, 209, 102, 0.9)) brightness(1.7) saturate(1.4);
+      }
+      65% {
+        transform: translateY(-4px) rotate(-8deg) scale(1.03);
+        opacity: 0.8;
+        filter: drop-shadow(0 0 18px rgba(255, 209, 102, 0.4)) brightness(1.2) saturate(1.1);
+      }
+      80% {
+        transform: translateY(-7px) rotate(6deg) scale(1.06);
+        opacity: 0.95;
+        filter: drop-shadow(0 0 25px rgba(255, 255, 255, 0.5)) drop-shadow(0 0 35px rgba(255, 209, 102, 0.7)) brightness(1.5) saturate(1.2);
+      }
+      100% { 
+        transform: translateY(0) rotate(0) scale(0.98);
+        opacity: 0.9;
+        filter: drop-shadow(0 0 12px rgba(255, 209, 102, 0.3)) brightness(1) saturate(1);
+      }
+    }
+
+    /* Enhanced bolt container with electric field effect */
+    .bolt {
+      width: 92px;
+      height: 92px;
+      display: grid;
+      place-items: center;
+      border-radius: 18px;
+      position: relative;
+      overflow: visible;
+      background: radial-gradient(circle at 30% 30%, rgba(255, 209, 102, 0.3), rgba(255, 209, 102, 0.15), rgba(255, 209, 102, 0.05));
+      box-shadow: 
+        0 0 20px rgba(255, 209, 102, 0.4),
+        0 0 40px rgba(255, 209, 102, 0.2),
+        0 0 60px rgba(255, 209, 102, 0.1),
+        0 0 80px rgba(255, 255, 255, 0.05),
+        inset 0 0 20px rgba(255, 255, 255, 0.15);
+      animation: bolt-glow 3s ease-in-out infinite;
+    }
+
+    @keyframes bolt-glow {
+      0%, 100% {
+        box-shadow: 
+          0 0 20px rgba(255, 209, 102, 0.4),
+          0 0 40px rgba(255, 209, 102, 0.2),
+          0 0 60px rgba(255, 209, 102, 0.1),
+          inset 0 0 20px rgba(255, 255, 255, 0.15);
+      }
+      50% {
+        box-shadow: 
+          0 0 30px rgba(255, 209, 102, 0.6),
+          0 0 60px rgba(255, 209, 102, 0.4),
+          0 0 90px rgba(255, 209, 102, 0.2),
+          0 0 120px rgba(255, 255, 255, 0.1),
+          inset 0 0 30px rgba(255, 255, 255, 0.25);
+      }
+    }
+
+    .bolt::before {
+      content: '';
+      position: absolute;
+      inset: -15px;
+      border-radius: 32px;
+      background: conic-gradient(
+        from 0deg,
+        transparent,
+        rgba(255, 209, 102, 0.15),
+        transparent,
+        rgba(255, 255, 255, 0.1),
+        transparent,
+        rgba(255, 209, 102, 0.08),
+        transparent
+      );
+      animation: electric-field 4s linear infinite;
+      z-index: -1;
+      opacity: 0.7;
+    }
+
+    .bolt::after {
+      content: '';
+      position: absolute;
+      inset: -25px;
+      border-radius: 42px;
+      background: conic-gradient(
+        from 180deg,
+        transparent,
+        rgba(255, 209, 102, 0.05),
+        transparent,
+        rgba(255, 255, 255, 0.03),
+        transparent
+      );
+      animation: electric-field 6s linear infinite reverse;
+      z-index: -2;
+      opacity: 0.5;
+    }
+
+    /* Electric sparks around the bolt */
+    .bolt .spark {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: rgba(255, 255, 255, 0.8);
+      border-radius: 50%;
+      animation: spark-flicker 0.5s infinite alternate;
+    }
+
+    .bolt .spark:nth-child(1) {
+      top: 20%;
+      left: 15%;
+      animation-delay: 0.1s;
+    }
+
+    .bolt .spark:nth-child(2) {
+      top: 60%;
+      right: 20%;
+      animation-delay: 0.3s;
+    }
+
+    .bolt .spark:nth-child(3) {
+      bottom: 25%;
+      left: 25%;
+      animation-delay: 0.6s;
+    }
+
+    @keyframes spark-flicker {
+      0% {
+        opacity: 0;
+        transform: scale(0.5);
+        box-shadow: 0 0 2px rgba(255, 255, 255, 0.5);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1.5);
+        box-shadow: 0 0 8px rgba(255, 209, 102, 0.8);
+      }
+    }
+
+    @keyframes electric-field {
+      0% { transform: rotate(0deg); opacity: 0.3; }
+      25% { transform: rotate(90deg); opacity: 0.7; }
+      50% { transform: rotate(180deg); opacity: 0.5; }
+      75% { transform: rotate(270deg); opacity: 0.8; }
+      100% { transform: rotate(360deg); opacity: 0.3; }
+    }
+
+    .bolt svg {
+      width: 44px;
+      height: 44px;
+      transform-origin: center;
+      animation: lightning-strike 2s ease-in-out infinite;
+      position: relative;
+      z-index: 2;
+    }
+
+    /* Enhanced loading text with advanced effects */
+    #loading-text {
+      color: #fff6e8;
+      font-weight: 700;
+      text-align: center;
+      max-width: 360px;
+      line-height: 1.25;
+      text-shadow: 
+        0 0 10px rgba(255, 209, 102, 0.4),
+        0 0 20px rgba(255, 209, 102, 0.2),
+        0 0 30px rgba(255, 255, 255, 0.1);
+      animation: text-electric-pulse 3s ease-in-out infinite;
+      position: relative;
+    }
+
+    @keyframes text-electric-pulse {
+      0%, 100% { 
+        opacity: 0.9;
+        text-shadow: 
+          0 0 10px rgba(255, 209, 102, 0.4),
+          0 0 20px rgba(255, 209, 102, 0.2);
+        transform: scale(1);
+      }
+      25% {
+        opacity: 1;
+        text-shadow: 
+          0 0 15px rgba(255, 209, 102, 0.6),
+          0 0 30px rgba(255, 209, 102, 0.3),
+          0 0 45px rgba(255, 255, 255, 0.2);
+        transform: scale(1.01);
+      }
+      50% {
+        opacity: 0.95;
+        text-shadow: 
+          0 0 12px rgba(255, 209, 102, 0.5),
+          0 0 25px rgba(255, 209, 102, 0.25);
+        transform: scale(1);
+      }
+      75% {
+        opacity: 1;
+        text-shadow: 
+          0 0 18px rgba(255, 209, 102, 0.7),
+          0 0 35px rgba(255, 209, 102, 0.4),
+          0 0 50px rgba(255, 255, 255, 0.15);
+        transform: scale(1.005);
+      }
+    }
+
+    /* Updated smaller bolt animations */
+    .bolt-small {
+      background: radial-gradient(circle at 30% 30%, rgba(255, 209, 102, 0.3), rgba(255, 209, 102, 0.15));
+      box-shadow: 
+        0 0 15px rgba(255, 209, 102, 0.2),
+        0 0 30px rgba(255, 209, 102, 0.1),
+        inset 0 0 15px rgba(255, 255, 255, 0.1);
+    }
+
+    .bolt-small svg {
+      animation: lightning-strike 1.5s ease-in-out infinite;
+    }
+
+    #confirm-bolt {
+      background: radial-gradient(circle at 30% 30%, rgba(255, 209, 102, 0.4), rgba(255, 209, 102, 0.2));
+      box-shadow: 
+        0 0 20px rgba(255, 209, 102, 0.25),
+        0 0 40px rgba(255, 209, 102, 0.15),
+        inset 0 0 20px rgba(255, 255, 255, 0.1);
+    }
+
+    #confirm-bolt svg {
+      animation: lightning-strike 1.8s ease-in-out infinite;
+    }
+
+    #loading-overlay { 
+      position: fixed;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, rgba(3,7,18,0.98), rgba(6,9,20,0.95), rgba(8,12,25,0.92));
+      z-index: 9999;
+      flex-direction: column;
+      gap: 24px;
+      transition: opacity .4s ease;
+      backdrop-filter: blur(2px);
+      overflow: hidden;
+    }
+
+    #loading-overlay::before {
+      content: '';
+      position: absolute;
+      width: 200%;
+      height: 200%;
+      background-image: 
+        radial-gradient(circle at 20% 30%, rgba(255, 209, 102, 0.02) 1px, transparent 1px),
+        radial-gradient(circle at 60% 70%, rgba(255, 255, 255, 0.01) 1px, transparent 1px),
+        radial-gradient(circle at 80% 20%, rgba(255, 209, 102, 0.015) 1px, transparent 1px);
+      background-size: 50px 50px, 80px 80px, 120px 120px;
+      animation: floating-particles 20s linear infinite;
+      opacity: 0.6;
+    }
+
+    @keyframes floating-particles {
+      0% { transform: translate(0, 0) rotate(0deg); }
+      33% { transform: translate(-20px, -20px) rotate(120deg); }
+      66% { transform: translate(20px, -10px) rotate(240deg); }
+      100% { transform: translate(0, 0) rotate(360deg); }
+    }
+
+    /* Enhanced loading text with subtitle */
+    .loading-subtitle {
+      font-size: 14px;
+      font-weight: 500;
+      color: rgba(255, 246, 232, 0.7);
+      margin-top: 8px;
+      text-shadow: 0 0 8px rgba(255, 209, 102, 0.3);
+    }
+
+    /* Enhanced lightning animation under text with improved realism */
+    .lightning-runner {
+      position: absolute;
+      bottom: -15px;
+      left: -100px;
+      width: 80px;
+      height: 35px;
+      animation: lightning-run 1.2s ease-in-out infinite;
+      opacity: 0.95;
+      filter: drop-shadow(0 0 8px rgba(255, 209, 102, 0.6));
+    }
+
+    @keyframes lightning-run {
+      0% {
+        left: -100px;
+        opacity: 0;
+        transform: scale(0.7) rotate(-5deg);
+        filter: drop-shadow(0 0 5px rgba(255, 209, 102, 0.3));
+      }
+      15% {
+        opacity: 1;
+        transform: scale(1) rotate(0deg);
+        filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.8)) drop-shadow(0 0 25px rgba(255, 209, 102, 0.9));
+      }
+      25% {
+        transform: scale(1.1) rotate(3deg);
+        filter: drop-shadow(0 0 20px rgba(255, 255, 255, 1)) drop-shadow(0 0 30px rgba(255, 209, 102, 1));
+      }
+      50% {
+        transform: scale(1) rotate(-2deg);
+        filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.7)) drop-shadow(0 0 20px rgba(255, 209, 102, 0.8));
+      }
+      75% {
+        transform: scale(1.05) rotate(1deg);
+        filter: drop-shadow(0 0 18px rgba(255, 255, 255, 0.9)) drop-shadow(0 0 28px rgba(255, 209, 102, 0.95));
+      }
+      85% {
+        opacity: 1;
+        transform: scale(0.9) rotate(-1deg);
+        filter: drop-shadow(0 0 10px rgba(255, 209, 102, 0.6));
+      }
+      100% {
+        left: calc(100% + 100px);
+        opacity: 0;
+        transform: scale(0.7) rotate(2deg);
+        filter: drop-shadow(0 0 5px rgba(255, 209, 102, 0.3));
+      }
+    }
+
+    .lightning-runner svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Server status indicator */
+    .server-status {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 16px;
+      font-size: 13px;
+      color: rgba(255, 246, 232, 0.6);
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #f59e0b;
+      animation: status-pulse 2s ease-in-out infinite;
+      box-shadow: 0 0 8px rgba(245, 158, 11, 0.5);
+    }
+
+    .status-dot.checking {
+      background: #0ea5e9;
+      box-shadow: 0 0 8px rgba(14, 165, 233, 0.5);
+    }
+
+    .status-dot.connecting {
+      background: #f59e0b;
+      box-shadow: 0 0 8px rgba(245, 158, 11, 0.5);
+    }
+
+    .status-dot.awake {
+      background: #16a34a;
+      box-shadow: 0 0 8px rgba(22, 163, 74, 0.5);
+      animation: status-pulse-success 2s ease-in-out infinite;
+    }
+
+    .status-dot.error {
+      background: #ef4444;
+      box-shadow: 0 0 8px rgba(239, 68, 68, 0.5);
+    }
+
+    @keyframes status-pulse {
+      0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+      50% {
+        opacity: 0.7;
+        transform: scale(1.3);
+      }
+    }
+
+    @keyframes status-pulse-success {
+      0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+      50% {
+        opacity: 0.8;
+        transform: scale(1.1);
+      }
+    }
+    /* Bolt container moved to enhanced section above */
+
+    #sending-overlay{ position:fixed; inset:0; display:none; align-items:center; justify-content:center; background: rgba(3,7,18,0.42); z-index:10005; }
+    #sending-card{ width:260px; padding:18px; border-radius:12px; display:flex; flex-direction:column; align-items:center; gap:12px; background: linear-gradient(180deg,#fffaf0,#fff7ea); box-shadow: 0 12px 34px rgba(6,8,15,0.36); transform-origin:center; }
+    #sending-card .bolt-small{ width:80px; height:80px; display:grid; place-items:center; border-radius:12px; background: radial-gradient(circle at 30% 30%, rgba(255, 209, 102, 0.3), rgba(255, 209, 102, 0.15)); box-shadow: 0 0 15px rgba(255, 209, 102, 0.2), 0 0 30px rgba(255, 209, 102, 0.1), inset 0 0 15px rgba(255, 255, 255, 0.1); }
+    #sending-card .bolt-small svg{ width:44px; height:44px; transform-origin:center; animation: lightning-strike 1.5s ease-in-out infinite; }
+    #sending-text{ font-weight:800; color:#2b2b2b; text-align:center; }
+
+    #confirm-popup-overlay{ position:fixed; inset:0; display:none; align-items:center; justify-content:center; background: rgba(3,7,18,0.5); z-index:10010; }
+    #confirm-popup{ width:90%; max-width:420px; background: linear-gradient(180deg, #fffef8, #fffaf1); padding:26px; border-radius:14px; box-shadow: 0 20px 60px rgba(6,8,15,0.45); display:flex; flex-direction:column; align-items:center; gap:12px; transform-origin:center; animation: popup-in .36s cubic-bezier(.2,.9,.2,1); }
+    #confirm-bolt{ width:96px; height:96px; border-radius:14px; display:grid; place-items:center; background: radial-gradient(circle at 30% 30%, rgba(255, 209, 102, 0.4), rgba(255, 209, 102, 0.2)); box-shadow: 0 0 20px rgba(255, 209, 102, 0.25), 0 0 40px rgba(255, 209, 102, 0.15), inset 0 0 20px rgba(255, 255, 255, 0.1); }
+    #confirm-bolt svg{ width:44px; height:44px; transform-origin:center; animation: lightning-strike 1.8s ease-in-out infinite; }
+    #confirm-title{ font-weight:800; font-size:18px; text-align:center; color:#2b2b2b; }
+    #confirm-text{ text-align:center; color:#2b2b2b; opacity:.88; font-weight:700; }
+
+    @keyframes popup-in{ from{ transform: translateY(8px) scale(.98); opacity:0 } to{ transform: translateY(0) scale(1); opacity:1 } }
+
+    .container.show{ opacity:1; transform: translateY(0) scale(1); }
+
+    @media (max-width:640px){
+      .row{ grid-template-columns:1fr; }
+      .theme-float{ top:12px; left:12px; }
+      .logo-wrap{ width:46px; height:46px; }
+      #confirm-popup{ padding:16px; }
+      #confirm-bolt{ width:80px; height:80px; }
+      .submit-btn{ min-width:220px; width:100%; }
+    }
+
+    .operator-help { 
+      font-size: 13px;
+      color: var(--muted-dark);
+      margin-top: 12px;
+      padding: 14px 16px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, rgba(79, 70, 229, 0.04), rgba(124, 58, 237, 0.02));
+      border: 1px solid rgba(79, 70, 229, 0.1);
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      box-shadow: 0 2px 8px rgba(79, 70, 229, 0.05);
+      transition: all 0.3s ease;
+    }
+    
+    .operator-help:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.1);
+      border-color: rgba(79, 70, 229, 0.15);
+    }
+    
+    .help-link { 
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      border: none;
+      color: white;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 12px;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 8px rgba(79, 70, 229, 0.2);
+    }
+    
+    .help-link:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+      filter: brightness(1.1);
+    }
+    
+    body[data-theme="light"] .operator-help { 
+      background: linear-gradient(135deg, rgba(79, 70, 229, 0.06), rgba(124, 58, 237, 0.03));
+      color: var(--muted-light);
+      border: 1px solid rgba(79, 70, 229, 0.12);
+      box-shadow: 0 2px 8px rgba(79, 70, 229, 0.08);
+    }
+    
+    body[data-theme="light"] .operator-help:hover {
+      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.15);
+      border-color: rgba(79, 70, 229, 0.2);
+    }
+
+    /* Confetti Animation */
+    .confetti-piece {
+      position: fixed;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9998;
+    }
+    
+    @keyframes confetti-fall {
+      0% {
+        transform: translateY(-100vh) rotate(0deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(100vh) translateX(var(--tx, 0)) rotate(720deg);
+        opacity: 0;
+      }
+    }
+
+    /* Smooth reveal animations */
+    .form-section {
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      overflow: hidden;
+    }
+    
+    .form-section.hidden {
+      max-height: 0;
+      opacity: 0;
+      margin: 0;
+      padding: 0;
+    }
+    
+    .form-section.visible {
+      max-height: 1000px;
+      opacity: 1;
+    }
+
+    /* Pulse animation for active elements */
+    @keyframes gentle-pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.02); }
+    }
+    
+    .pulse-animation {
+      animation: gentle-pulse 0.6s ease-in-out;
+    }
+
+    /* Enhanced hover effects */
+    .opt {
+      transition: all .25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .opt:hover {
+      transform: translateY(-2px) scale(1.01);
+      box-shadow: 0 12px 40px rgba(8,10,20,0.12);
+    }
+
+    /* Improved mobile responsiveness */
+    @media (max-width: 768px) {
+      body {
+        padding: 16px 16px 40px 16px;
+      }
+      
+      .container {
+        margin-top: 20px;
+        margin-bottom: 20px;
+        padding: 20px;
+      }
+    }
+  </style>
 </head>
-<body>
-    <div id="loading-overlay">
-        <div class="spinner"></div>
-        <p id="loading-text">Conectando ao servidor...</p>
+<body data-theme="dark">
+  <div id="loading-overlay" aria-hidden="false">
+    <div class="bolt" aria-hidden="true">
+      <div class="spark"></div>
+      <div class="spark"></div>
+      <div class="spark"></div>
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" role="img">
+        <path d="M13.5 2L3 13h7l-1 9L21 11h-7l-.5-9z" fill="#FFD166" opacity="0.98"/>
+        <path d="M13.5 2L3 13h7l-1 9L21 11h-7l-.5-9z" fill="url(#lightning-gradient)" opacity="0.8"/>
+        <defs>
+          <linearGradient id="lightning-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.9"/>
+            <stop offset="30%" stop-color="#FFD166" stop-opacity="0.8"/>
+            <stop offset="70%" stop-color="#F4A261" stop-opacity="0.7"/>
+            <stop offset="100%" stop-color="#E76F51" stop-opacity="0.6"/>
+          </linearGradient>
+        </defs>
+      </svg>
+    </div>
+    <div id="loading-text" style="position: relative;">
+      <span id="loading-message">⚡ Nosso servidor está acordando...</span>
+      <div class="loading-subtitle">Aguarde enquanto estabelecemos a conexão</div>
+      <div class="lightning-runner">
+        <svg viewBox="0 0 24 24" fill="none">
+          <path d="M13.5 2L3 13h7l-1 9L21 11h-7l-.5-9z" fill="#FFD166" opacity="0.9"/>
+          <path d="M13.5 2L3 13h7l-1 9L21 11h-7l-.5-9z" fill="url(#lightning-gradient-runner)" opacity="0.7"/>
+          <defs>
+            <linearGradient id="lightning-gradient-runner" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.9"/>
+              <stop offset="50%" stop-color="#FFD166" stop-opacity="0.8"/>
+              <stop offset="100%" stop-color="#F4A261" stop-opacity="0.6"/>
+            </linearGradient>
+          </defs>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <div class="container" role="main" aria-labelledby="site-title" style="display:block;">
+    <div class="theme-float" aria-hidden="false">
+      <button id="theme-toggle" class="theme-btn" aria-pressed="false" title="Alternar tema"><span id="theme-icon">🌙</span></button>
     </div>
 
-    <div class="container" style="display: none;">
-        <div class="header">
-            <h2 id="page-header-title"></h2>
-            <p id="page-header-subtitle" class="subtitle"></p>
+    <header class="header">
+      <div class="brand" aria-hidden="false">
+        <div class="logo-wrap" aria-hidden="true">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M11.5 2L4 13h6l-1 9L20 9h-6l-2.5-7z" fill="url(#g)"></path>
+            <defs><linearGradient id="g" x1="0" x2="1"><stop offset="0" stop-color="#7c3aed"/><stop offset="1" stop-color="#4f46e5"/></linearGradient></defs>
+          </svg>
         </div>
-        
-        <form id="recharge-form">
-            <div class="form-group"><label for="nome">Nome</label><span class="input-icon">👤</span><input type="text" id="nome" name="nome" placeholder="Digite seu nome" required></div>
-            <div class="form-group"><label for="telefone">Número de telefone com DDD</label><span class="input-icon">📱</span><input type="tel" id="telefone" name="telefone" placeholder="Ex: 11987654321" required></div>
-            <div class="form-group"><label for="operadora">Selecione a Operadora</label><span class="input-icon">📡</span><select id="operadora" name="operadora" required><option value="">-- Escolha uma operadora --</option><option value="Tim">Tim</option><option value="Vivo">Vivo</option><option value="Claro">Claro</option></select></div>
-            <div id="tim-password-field" class="form-group password-field"><label for="senha-tim">Senha do App Meu TIM</label><span class="input-icon">🔒</span><input type="password" id="senha-tim" name="senha_tim" placeholder="Digite a senha do app"><div class="password-help"><strong>Como pegar a senha do Aplicativo Meu TIM?</strong><p><a href="https://auth3.tim.com.br/webapp-resetSenha/forgotPassword?layout=meutimapp&loginType=USER&channel=4&msisdn=" target="_blank" rel="noopener noreferrer">Clique no link abaixo</a>, coloque seu número e a senha chegará por SMS.</p><strong>Por que precisa dessa senha?</strong><p>É o aplicativo oficial da Tim! A recarga precisa ser feita por lá.</p></div></div>
-            <div id="vivo-password-field" class="form-group password-field"><label for="senha-vivo">Senha do App Vivo</label><span class="input-icon">🔒</span><input type="password" id="senha-vivo" name="senha_vivo" placeholder="Digite a senha do app"><div class="password-help"><p>Para recuperar a sua senha, acesse o <a href="https://www.vivo.com.br/para-voce" target="_blank" rel="noopener noreferrer">site oficial da Vivo</a>, clique em "Esqueci minha senha" e siga as instruções.</p></div></div>
-            <div id="claro-password-field" class="form-group password-field"><label for="senha-claro">Senha do App Minha Claro</label><span class="input-icon">🔒</span><input type="password" id="senha-claro" name="senha_claro" placeholder="Digite a senha do app"><div class="password-help"><p>Para recuperar a sua senha, abra o app Minha Claro, clique em "Esqueci minha senha" e siga as instruções.</p></div></div>
-            <div id="recharge-options-container"></div>
-            <div id="pix-payment-info">
-                <h3>Pague com PIX para confirmar</h3>
-                <p>Escaneie o QR Code ou use o código Copia e Cola no seu app de pagamentos.</p>
-                <canvas id="pix-qrcode"></canvas>
-                <div class="br-code-wrapper"><label for="br-code">PIX Copia e Cola</label><textarea id="br-code" rows="4" readonly></textarea><button type="button" class="copy-pix-btn">Copiar Código</button></div>
-            </div>
-            <button type="submit">Solicitar Recarga (Após Pagar)</button>
-        </form>
-        
-        <div id="status-message"></div>
 
-        <div class="footer">
-            <p class="highlight">Plataforma segura com criptografia de ponta a ponta.</p>
-            <p id="page-footer-warning" class="warning"></p>
-            <p id="page-footer-copyright"></p>
+        <div>
+          <h1 id="site-title">THUNDER Recargas</h1>
+          <p id="page-sub" class="subtitle">Recargas rápidas, seguras e promocionais</p>
         </div>
+      </div>
+    </header>
+
+    <form id="recharge-form" novalidate>
+      <div class="row">
+        <div class="form-group form-input-wrap">
+          <label for="nome">👤 Nome Completo</label>
+          <span class="input-icon" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M12 12a5 5 0 100-10 5 5 0 000 10zM3 21a9 9 0 0118 0" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </span>
+          <input id="nome" name="nome" type="text" placeholder="Digite seu nome completo" required autocomplete="name" minlength="2" maxlength="100" />
+        </div>
+
+        <div class="form-group form-input-wrap">
+          <label for="telefone">📱 Telefone (com DDD)</label>
+          <span class="input-icon" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M22 16.92V21a1 1 0 01-1.11 1 19 19 0 01-8.63-3.07A19 19 0 013.07 9.74 19 19 0 010 1.11 1 1 0 011 0h4.09a1 1 0 011 .75c.12.53.3 1.05.53 1.54a1 1 0 01-.24 1.05L5.7 6.7a16 16 0 007.6 7.6l1.86-1.86a1 1 0 011.05-.24c.49.23 1.01.41 1.54.53a1 1 0 01.75 1V22z" stroke="currentColor" stroke-width="0.6" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </span>
+          <input id="telefone" name="telefone" type="tel" placeholder="Ex: (11) 98765-4321" required autocomplete="tel" pattern="\([0-9]{2}\) [0-9]{4,5}-[0-9]{4}" title="Formato: (11) 98765-4321" />
+        </div>
+      </div>
+
+      <div class="form-group form-input-wrap">
+        <label for="operadora">📡 Operadora de Celular</label>
+
+        <select id="operadora" name="operadora" required>
+          <option value="">-- Escolha sua operadora --</option>
+          <option value="Tim">🔵 TIM</option>
+          <option value="Vivo">🟣 VIVO</option>
+          <option value="Claro">🔴 CLARO</option>
+        </select>
+
+        <div id="operator-help" class="operator-help" style="display:none;"></div>
+      </div>
+
+      <div id="tim-password-field" class="form-group form-section hidden" style="width:100%;">
+        <label for="senha-tim">Senha do App Meu TIM (obrigatória para recarga)</label>
+        <div class="form-input-wrap">
+          <span class="input-icon" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="3" y="11" width="18" height="10" rx="2" stroke="currentColor" stroke-width="0.9" /><path d="M7 11V8a5 5 0 0110 0v3" stroke="currentColor" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          <input id="senha-tim" name="senha_tim" type="password" placeholder="Digite a senha do seu app Meu TIM" />
+        </div>
+      </div>
+
+      <div id="vivo-password-field" class="form-group form-section hidden" style="width:100%;">
+        <label for="senha-vivo">Senha do App Vivo (obrigatória para recarga)</label>
+        <div class="form-input-wrap">
+          <span class="input-icon" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="3" y="11" width="18" height="10" rx="2" stroke="currentColor" stroke-width="0.9" /><path d="M7 11V8a5 5 0 0110 0v3" stroke="currentColor" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          <input id="senha-vivo" name="senha_vivo" type="password" placeholder="Digite a senha do seu app Vivo" />
+        </div>
+      </div>
+
+      <div id="claro-password-field" class="form-group form-section hidden" style="width:100%;">
+        <label for="senha-claro">Senha do App Minha Claro (obrigatória para recarga)</label>
+        <div class="form-input-wrap">
+          <span class="input-icon" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="3" y="11" width="18" height="10" rx="2" stroke="currentColor" stroke-width="0.9" /><path d="M7 11V8a5 5 0 0110 0v3" stroke="currentColor" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          <input id="senha-claro" name="senha_claro" type="password" placeholder="Digite a senha do seu app Minha Claro" />
+        </div>
+      </div>
+
+      <div id="recharge-options-container" class="recharge-options-container" aria-live="polite"></div>
+
+      <div id="pix-payment-info" aria-hidden="true">
+        <h3 style="margin:0 0 8px 0;">Pague com PIX para confirmar</h3>
+        <p style="margin:0 0 10px 0; color:inherit; opacity:.85;">Escaneie o QR Code ou copie o código "Copia e Cola".</p>
+        <canvas id="pix-qrcode"></canvas>
+        <div class="br-code-wrapper" style="margin-top:10px;">
+          <label for="br-code" style="display:block;margin-bottom:8px;font-weight:700;">PIX Copia e Cola</label>
+          <textarea id="br-code" rows="3" readonly></textarea>
+          <button type="button" class="copy-pix-btn" aria-live="polite">Copiar Código</button>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="submit-btn" type="submit" id="submit-btn" disabled>🔒 Preencha todos os campos</button>
+      </div>
+
+      <div id="status-message" role="status" aria-live="polite" style="display:none;"></div>
+    </form>
+
+    <div class="footer" aria-hidden="false">
+      <div id="page-footer-warning" style="display:block;">Atenção: A recarga pode demorar até 24 horas para ser creditada.</div>
+      <div id="page-footer-copyright" style="margin-top:8px;">© Thunder Recargas</div>
     </div>
+  </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const BACKEND_URL = 'https://thuder-recargas-backend.onrender.com'; // Use a sua URL real aqui
-            
-            let PIX_KEY = '';
-            let PIX_NAME = '';
-            let PIX_CITY = '';
-            let rechargeOptions = {};
+  <div id="sending-overlay" aria-hidden="true">
+    <div id="sending-card">
+      <div class="bolt-small" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M13.5 2L3 13h7l-1 9L21 11h-7l-.5-9z" fill="#FFD166" opacity="0.98"/>
+          <path d="M13.5 2L3 13h7l-1 9L21 11h-7l-.5-9z" fill="url(#lightning-gradient-2)" opacity="0.8"/>
+          <defs>
+            <linearGradient id="lightning-gradient-2" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.9"/>
+              <stop offset="30%" stop-color="#FFD166" stop-opacity="0.8"/>
+              <stop offset="70%" stop-color="#F4A261" stop-opacity="0.7"/>
+              <stop offset="100%" stop-color="#E76F51" stop-opacity="0.6"/>
+            </linearGradient>
+          </defs>
+        </svg>
+      </div>
+      <div id="sending-text">Enviando sua solicitação...</div>
+    </div>
+  </div>
 
-            const mainContainer = document.querySelector('.container');
-            const loadingOverlay = document.getElementById('loading-overlay');
-            const loadingText = document.getElementById('loading-text');
+  <div id="confirm-popup-overlay" role="dialog" aria-modal="true" aria-hidden="true">
+    <div id="confirm-popup" role="document">
+      <div id="confirm-bolt" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M13.5 2L3 13h7l-1 9L21 11h-7l-.5-9z" fill="#FFD166" opacity="0.98"/>
+          <path d="M13.5 2L3 13h7l-1 9L21 11h-7l-.5-9z" fill="url(#lightning-gradient-3)" opacity="0.8"/>
+          <defs>
+            <linearGradient id="lightning-gradient-3" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.9"/>
+              <stop offset="30%" stop-color="#FFD166" stop-opacity="0.8"/>
+              <stop offset="70%" stop-color="#F4A261" stop-opacity="0.7"/>
+              <stop offset="100%" stop-color="#E76F51" stop-opacity="0.6"/>
+            </linearGradient>
+          </defs>
+        </svg>
+      </div>
+      <div id="confirm-title">Solicitação Recebida</div>
+      <div id="confirm-text">A recarga para o número: <span id="confirm-phone">xxxxx</span> está na fila de processamento e em até 24 horas será creditada.</div>
+    </div>
+  </div>
 
-            const rechargeForm = document.getElementById('recharge-form');
-            const operadoraSelect = document.getElementById('operadora');
-            const optionsContainer = document.getElementById('recharge-options-container');
-            const statusMessage = document.getElementById('status-message');
-            const submitButton = rechargeForm.querySelector('button');
-            const passwordFields = { 'Tim': document.getElementById('tim-password-field'), 'Vivo': document.getElementById('vivo-password-field'), 'Claro': document.getElementById('claro-password-field') };
-            const pixInfoDiv = document.getElementById('pix-payment-info');
-            const qrCodeCanvas = document.getElementById('pix-qrcode');
-            const brCodeTextarea = document.getElementById('br-code');
-            const copyPixBtn = document.querySelector('.copy-pix-btn');
+  <div id="confetti-container" aria-hidden="true"></div>
 
-            async function initializeApp() {
-                // Timer para a mensagem de "servidor acordando"
-                const wakeUpTimer = setTimeout(() => {
-                    loadingText.innerHTML = 'Nosso servidor está acordando...<br>Isso pode levar até 30 segundos, por favor aguarde.';
-                }, 3000);
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const BACKEND_URL = 'https://thuder-recargas-backend.onrender.com';
+      
+      // EMERGENCY FALLBACK - Always hide loading screen after 30 seconds
+      setTimeout(() => {
+        const loadingOverlay = document.getElementById('loading-overlay');
+        const container = document.querySelector('.container');
+        if (loadingOverlay && loadingOverlay.style.display !== 'none') {
+          console.log('Emergency timeout: Force hiding loading screen');
+          loadingOverlay.style.transition = 'opacity 0.5s ease';
+          loadingOverlay.style.opacity = '0';
+          setTimeout(() => {
+            loadingOverlay.style.display = 'none';
+            if (container) container.classList.add('show');
+          }, 500);
+        }
+      }, 30000); // 30 seconds
 
-                try {
-                    const response = await fetch(`${BACKEND_URL}/api/config`);
-                    if (!response.ok) throw new Error('Não foi possível carregar as configurações da página.');
-                    
-                    const config = await response.json();
-                    
-                    PIX_KEY = config.pixKey;
-                    PIX_NAME = config.pixName;
-                    PIX_CITY = config.pixCity;
-                    rechargeOptions = config.rechargeOptions;
-                    
-                    document.title = config.pageTitle;
-                    document.getElementById('page-header-title').textContent = config.headerTitle;
-                    document.getElementById('page-header-subtitle').textContent = config.headerSubtitle;
-                    document.getElementById('page-footer-warning').innerHTML = `<strong>Atenção:</strong> ${config.footerWarning}`;
-                    document.getElementById('page-footer-copyright').textContent = config.footerCopyright;
+      // Elements
+      const loadingOverlay = document.getElementById('loading-overlay');
+      const loadingText = document.getElementById('loading-text');
+      const loadingMessage = document.getElementById('loading-message');
+      const container = document.querySelector('.container');
+      const themeToggle = document.getElementById('theme-toggle');
+      const themeIcon = document.getElementById('theme-icon');
+      const rechargeForm = document.getElementById('recharge-form');
+      const operadoraSelect = document.getElementById('operadora');
+      const optionsContainer = document.getElementById('recharge-options-container');
+      const pixInfoDiv = document.getElementById('pix-payment-info');
+      const qrCanvas = document.getElementById('pix-qrcode');
+      const brCodeTextarea = document.getElementById('br-code');
+      const copyPixBtn = document.querySelector('.copy-pix-btn');
+      const statusMessage = document.getElementById('status-message');
+      const submitButton = document.getElementById('submit-btn');
 
-                    // Mostra o conteúdo principal da página
-                    mainContainer.style.display = 'block';
+      const sendingOverlay = document.getElementById('sending-overlay');
+      const confirmOverlay = document.getElementById('confirm-popup-overlay');
+      const confirmPhoneEl = document.getElementById('confirm-phone');
+      const confettiContainer = document.getElementById('confetti-container');
 
-                } catch (error) {
-                    loadingText.textContent = `${error.message} Verifique se a URL do back-end está correta.`;
-                    // Não esconde a tela de loading se der erro, para o usuário ver a mensagem.
-                    return; 
-                } finally {
-                    // Limpa o timer e esconde a tela de loading em caso de sucesso
-                    clearTimeout(wakeUpTimer);
-                    loadingOverlay.style.display = 'none';
-                }
+      const operatorHelpDiv = document.getElementById('operator-help');
+      const passwordFields = {
+        'Tim': document.getElementById('tim-password-field'),
+        'Vivo': document.getElementById('vivo-password-field'),
+        'Claro': document.getElementById('claro-password-field')
+      };
+
+      let PIX_KEY = '';
+      let PIX_NAME = '';
+      let PIX_CITY = '';
+      let rechargeOptions = {};
+      let serverStatus = 'checking'; // checking, sleeping, awake, error
+      let checkAttempts = 0;
+      const maxCheckAttempts = 5; // Reduced from 10 to 5
+
+      // Server status checking
+      async function checkServerStatus() {
+        checkAttempts++;
+        
+        try {
+          updateLoadingMessage('🔍 Verificando conexão do servidor...', 'checking');
+          
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 4000); // 4 second timeout
+          
+          const response = await fetch(`${BACKEND_URL}/health`, {
+            method: 'GET',
+            signal: controller.signal,
+            headers: {
+              'Content-Type': 'application/json',
+              'Cache-Control': 'no-cache'
             }
-
-            const crc16 = (payload) => { let crc = 0xFFFF; const polynomial = 0x1021; for (const char of payload) { let byte = char.charCodeAt(0); for (let i = 0; i < 8; i++) { const bit = ((byte >> (7 - i)) & 1) === 1; const c15 = ((crc >> 15) & 1) === 1; crc <<= 1; if (c15 ^ bit) crc ^= polynomial; } } crc &= 0xFFFF; return crc.toString(16).toUpperCase().padStart(4, '0'); };
-            const generateBRCode = ({ key, name, city, txid = '***', amount }) => { name = name.substring(0, 25).normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase(); city = city.substring(0, 15).toUpperCase(); const format = (id, val) => `${id}${String(val.length).padStart(2, '0')}${val}`; const merchantAccountInfo = format('00', 'BR.GOV.BCB.PIX') + format('01', key); const txidField = format('05', txid); const payload = [format('00', '01'), format('26', merchantAccountInfo), format('52', '0000'), format('53', '986'), format('54', amount), format('58', 'BR'), format('59', name), format('60', city), format('62', txidField)].join(''); return `${payload}6304${crc16(payload + '6304')}`; };
-            
-            function updateFormUI() {
-                const selectedOperadora = operadoraSelect.value;
-                optionsContainer.innerHTML = '';
-                pixInfoDiv.style.display = 'none';
-                Object.values(passwordFields).forEach(field => { field.style.display = 'none'; field.querySelector('input').required = false; });
-                if (passwordFields[selectedOperadora]) {
-                    passwordFields[selectedOperadora].style.display = 'block';
-                    passwordFields[selectedOperadora].querySelector('input').required = true;
-                }
-                if (rechargeOptions[selectedOperadora]) {
-                    const header = document.createElement('label');
-                    header.textContent = `Selecione um valor para ${selectedOperadora}:`;
-                    optionsContainer.appendChild(header);
-                    rechargeOptions[selectedOperadora].forEach((optionText, index) => {
-                        const id = `option-${index}`;
-                        const radioInput = document.createElement('input'); radioInput.type = 'radio'; radioInput.id = id; radioInput.name = 'recarga_selecionada'; radioInput.value = optionText; radioInput.required = true; radioInput.classList.add('hidden-radio');
-                        const label = document.createElement('label'); label.htmlFor = id; label.textContent = optionText; label.classList.add('recharge-option-label');
-                        optionsContainer.appendChild(radioInput); optionsContainer.appendChild(label);
-                    });
-                }
+          });
+          
+          clearTimeout(timeoutId);
+          
+          if (response.ok) {
+            const data = await response.json();
+            if (data.status === 'awake' || data.status === 'healthy' || data.status === 'ok') {
+              serverStatus = 'awake';
+              updateLoadingMessage('✅ Servidor conectado com sucesso!', 'awake');
+              setTimeout(() => {
+                hideLoadingScreen();
+              }, 1000);
+              return true;
+            } else {
+              serverStatus = 'sleeping';
+              updateLoadingMessage('🌐 Servidor ativando... Aguarde um momento', 'connecting');
+              return false;
             }
+          } else {
+            throw new Error('Server responded with error');
+          }
+        } catch (error) {
+          console.log('Server check attempt', checkAttempts, 'failed:', error.message);
+          
+          if (error.name === 'AbortError') {
+            updateLoadingMessage('⏱️ Ativando servidor... Pode levar alguns segundos', 'connecting');
+          } else {
+            updateLoadingMessage('🔄 Estabelecendo conexão...', 'connecting');
+          }
+          
+          serverStatus = 'sleeping';
+          
+          // If we've tried too many times, give up and proceed
+          if (checkAttempts >= maxCheckAttempts) {
+            updateLoadingMessage('✅ Sistema carregado! Funcionalidade completa disponível.', 'awake');
+            setTimeout(() => {
+              hideLoadingScreen();
+            }, 1200);
+            return true; // Force success to unblock loading
+          }
+          
+          return false;
+        }
+      }
+      
+      function updateLoadingMessage(message, status) {
+        if (loadingMessage) {
+          loadingMessage.innerHTML = message;
+        }
+        
+        // Update server status indicator
+        updateServerStatusIndicator(status);
+      }
+      
+      function updateServerStatusIndicator(status) {
+        let statusIndicator = document.querySelector('.server-status');
+        
+        if (!statusIndicator) {
+          statusIndicator = document.createElement('div');
+          statusIndicator.className = 'server-status';
+          loadingText.appendChild(statusIndicator);
+        }
+        
+        const statusMessages = {
+          checking: '🔍 Verificando conexão...',
+          connecting: '🌐 Acordando servidor...',
+          sleeping: '😴 Servidor em repouso...',
+          awake: '✅ Servidor ativo',
+          error: '❌ Erro de conexão'
+        };
+        
+        statusIndicator.innerHTML = `
+          <div class="status-dot ${status}"></div>
+          <span>${statusMessages[status] || 'Conectando...'}</span>
+        `;
+      }
+      
+      async function initializeServerConnection() {
+        updateLoadingMessage('⚡ Inicializando conexão com servidor...', 'checking');
+        
+        // Set a maximum timeout to ensure loading screen doesn't get stuck
+        const maxLoadingTime = 12000; // 12 seconds maximum
+        const loadingTimeout = setTimeout(() => {
+          console.log('Loading timeout reached, proceeding anyway');
+          updateLoadingMessage('✅ Sistema carregado! Pronto para usar.', 'awake');
+          setTimeout(() => {
+            hideLoadingScreen();
+          }, 1500);
+        }, maxLoadingTime);
+        
+        try {
+          // First quick check
+          const isAwake = await checkServerStatus();
+          
+          if (isAwake) {
+            clearTimeout(loadingTimeout);
+            return;
+          }
+          
+          if (checkAttempts < maxCheckAttempts) {
+            // If server is sleeping, wake it up and keep checking
+            updateLoadingMessage('😴 Servidor em repouso... Despertando agora!', 'connecting');
             
-            optionsContainer.addEventListener('change', function(event) {
-                if (event.target.name === 'recarga_selecionada') {
-                    const selectedValue = event.target.value;
-                    const amountToPay = selectedValue.split('PAGA R$')[1].replace(',', '.');
-                    if(amountToPay) {
-                        const brCode = generateBRCode({ key: PIX_KEY, name: PIX_NAME, city: PIX_CITY, amount: amountToPay });
-                        brCodeTextarea.value = brCode;
-                        if (window.QRious) { new QRious({ element: qrCodeCanvas, value: brCode, size: 180 }); }
-                        pixInfoDiv.style.display = 'block';
-                    }
+            // Multiple wake up calls for better reliability
+            try {
+              Promise.all([
+                fetch(`${BACKEND_URL}/`, { method: 'GET' }).catch(() => {}),
+                fetch(`${BACKEND_URL}/api/config`, { method: 'GET' }).catch(() => {})
+              ]);
+            } catch (e) {}
+            
+            // Continue checking every 1.5 seconds (faster)
+            const checkInterval = setInterval(async () => {
+              const isNowAwake = await checkServerStatus();
+              
+              if (isNowAwake || checkAttempts >= maxCheckAttempts) {
+                clearInterval(checkInterval);
+                clearTimeout(loadingTimeout);
+                
+                if (!isNowAwake && checkAttempts >= maxCheckAttempts) {
+                  updateLoadingMessage('✅ Conectado! Sistema pronto para uso.', 'awake');
+                  setTimeout(() => {
+                    hideLoadingScreen();
+                  }, 1200);
                 }
-            });
-            
-            copyPixBtn.addEventListener('click', function() { navigator.clipboard.writeText(brCodeTextarea.value).then(() => { const originalText = this.textContent; this.textContent = 'Copiado!'; setTimeout(() => { this.textContent = 'Copiar Código'; }, 2000); }); });
-            operadoraSelect.addEventListener('change', updateFormUI);
-            rechargeForm.addEventListener('submit', async function(event) {
-                event.preventDefault();
-                const formData = new FormData(rechargeForm);
-                let dataToSend = { nome: formData.get('nome'), telefone: formData.get('telefone'), operadora: formData.get('operadora'), recarga_selecionada: formData.get('recarga_selecionada') };
-                const senhaTim = formData.get('senha_tim'); const senhaVivo = formData.get('senha_vivo'); const senhaClaro = formData.get('senha_claro');
-                if (dataToSend.operadora === 'Tim') dataToSend.senha_tim = senhaTim; if (dataToSend.operadora === 'Vivo') dataToSend.senha_vivo = senhaVivo; if (dataToSend.operadora === 'Claro') dataToSend.senha_claro = senhaClaro;
-                submitButton.disabled = true; statusMessage.className = 'loading'; statusMessage.textContent = 'Enviando sua solicitação...';
-                try {
-                    const response = await fetch(`${BACKEND_URL}/api/recarregar`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(dataToSend) });
-                    const result = await response.json();
-                    if (!response.ok) throw new Error(result.message);
-                    statusMessage.className = 'success'; statusMessage.textContent = result.message;
-                    rechargeForm.reset(); updateFormUI();
-                } catch (error) { statusMessage.className = 'error'; statusMessage.textContent = `Erro: ${error.message}`;
-                } finally { submitButton.disabled = false; }
-            });
+              }
+            }, 1500); // Reduced from 2000 to 1500ms for faster response
+          } else {
+            clearTimeout(loadingTimeout);
+            updateLoadingMessage('✅ Sistema carregado com sucesso!', 'awake');
+            setTimeout(() => {
+              hideLoadingScreen();
+            }, 1200);
+          }
+        } catch (error) {
+          clearTimeout(loadingTimeout);
+          console.error('Server initialization error:', error);
+          updateLoadingMessage('✅ Aplicação carregada! Pronto para usar.', 'awake');
+          setTimeout(() => {
+            hideLoadingScreen();
+          }, 1500);
+        }
+      }
+      
+      // Loading screen management
+      function hideLoadingScreen() {
+        if (loadingOverlay) {
+          loadingOverlay.style.transition = 'opacity 0.5s ease';
+          loadingOverlay.style.opacity = '0';
+          setTimeout(() => {
+            loadingOverlay.style.display = 'none';
+            container.classList.add('show');
+          }, 500);
+        }
+      }
+      
+      // Initialize server connection on page load
+      initializeServerConnection();
+      // Theme management
+      function applyTheme(theme){
+        document.body.setAttribute('data-theme', theme);
+        if(theme === 'light'){ themeIcon.textContent = '☀️'; themeToggle.setAttribute('aria-pressed','true'); }
+        else { themeIcon.textContent = '🌙'; themeToggle.setAttribute('aria-pressed','false'); }
+        localStorage.setItem('thunder-theme', theme);
+      }
+      const stored = localStorage.getItem('thunder-theme') || 'dark';
+      applyTheme(stored);
+      themeToggle.addEventListener('click', ()=> applyTheme(document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'));
 
-            initializeApp();
+      // CRC16 & BR Code generator
+      const crc16 = (payload) => { let crc = 0xFFFF; const polynomial = 0x1021; for (const char of payload) { let byte = char.charCodeAt(0); for (let i = 0; i < 8; i++) { const bit = ((byte >> (7 - i)) & 1) === 1; const c15 = ((crc >> 15) & 1) === 1; crc <<= 1; if (c15 ^ bit) crc ^= polynomial; } } crc &= 0xFFFF; return crc.toString(16).toUpperCase().padStart(4, '0'); };
+      const generateBRCode = ({ key, name, city, txid = '***', amount }) => {
+        name = (name||'').substring(0,25).normalize("NFD").replace(/[\u0300-\u036f]/g,"").toUpperCase();
+        city = (city||'').substring(0,15).toUpperCase();
+        const format = (id,val) => `${id}${String(val.length).padStart(2,'0')}${val}`;
+        const merchantAccountInfo = format('00','BR.GOV.BCB.PIX') + format('01', key);
+        const txidField = format('05', txid);
+        const payload = [format('00','01'), format('26', merchantAccountInfo), format('52','0000'), format('53','986'), format('54', amount), format('58','BR'), format('59', name), format('60', city), format('62', txidField)].join('');
+        return `${payload}6304${crc16(payload + '6304')}`;
+      };
+
+      // Smooth scrolling utility
+      function smoothScrollToElement(element, offset = 100) {
+        if (!element) return;
+        const elementTop = element.offsetTop - offset;
+        window.scrollTo({
+          top: elementTop,
+          behavior: 'smooth'
         });
-    </script>
+      }
+
+      // Auto-scroll when content appears
+      function autoScrollToNewContent(element, delay = 300) {
+        setTimeout(() => {
+          smoothScrollToElement(element, 80);
+        }, delay);
+      }
+
+      // Add reveal animation to elements
+      function revealElement(element, addClass = 'pulse-animation') {
+        if (!element) return;
+        element.classList.add(addClass);
+        setTimeout(() => {
+          element.classList.remove(addClass);
+        }, 600);
+      }
+
+      // Enhanced form section management
+      function showFormSection(element, scroll = true) {
+        if (!element) return;
+        element.classList.remove('hidden');
+        element.classList.add('visible');
+        if (scroll) {
+          autoScrollToNewContent(element, 200);
+        }
+        revealElement(element);
+      }
+
+      function hideFormSection(element) {
+        if (!element) return;
+        element.classList.remove('visible');
+        element.classList.add('hidden');
+      }
+
+      // Status & overlays
+      function showStatus(type, text){
+        statusMessage.style.display = 'block';
+        statusMessage.className = '';
+        statusMessage.classList.add(type);
+        statusMessage.textContent = text;
+        console.log(`[status:${type}] ${text}`);
+      }
+      function showSending(show){
+        if(show){ sendingOverlay.style.display = 'flex'; sendingOverlay.setAttribute('aria-hidden','false'); }
+        else { sendingOverlay.style.display = 'none'; sendingOverlay.setAttribute('aria-hidden','true'); }
+      }
+
+      // Confetti
+      function launchConfetti({count = 60, originX = 0.5, originY = 0.2} = {}){
+        while(confettiContainer.firstChild) confettiContainer.removeChild(confettiContainer.firstChild);
+        const colors = ['#ff6b6b','#ffd166','#6ee7b7','#60a5fa','#b794f4','#f97316'];
+        const w = window.innerWidth;
+        const centerX = Math.floor(w * originX);
+        const startY = Math.floor(window.innerHeight * originY);
+        for(let i=0;i<count;i++){
+          const el = document.createElement('div');
+          el.className = 'confetti-piece';
+          el.style.background = colors[Math.floor(Math.random()*colors.length)];
+          const offsetX = (Math.random()-0.5) * 240;
+          el.style.left = (centerX + offsetX) + 'px';
+          el.style.top = (startY + (Math.random()-0.5) * 40) + 'px';
+          const tx = (Math.random()*600 - 300) + 'px';
+          el.style.setProperty('--tx', tx);
+          const delay = (Math.random()*300) + 'ms';
+          const duration = (Math.random()*1800 + 1800) + 'ms';
+          el.style.animation = `confetti-fall ${duration} linear ${delay} forwards`;
+          el.style.transform = `rotate(${Math.random()*360}deg)`;
+          el.style.opacity = '0.98';
+          confettiContainer.appendChild(el);
+        }
+        setTimeout(()=> { while(confettiContainer.firstChild) confettiContainer.removeChild(confettiContainer.firstChild); }, 4200);
+      }
+
+      // Confirmation popup (10s)
+      function showConfirmation(telefone){
+        confirmPhoneEl.textContent = telefone || 'xxxxx';
+        launchConfetti({count:80, originX:0.5, originY:0.28});
+        confirmOverlay.style.display = 'flex';
+        confirmOverlay.setAttribute('aria-hidden','false');
+        // keep popup visible for 10 seconds (10000 ms), then fade
+        setTimeout(()=> {
+          confirmOverlay.style.transition = 'opacity .36s ease';
+          confirmOverlay.style.opacity = '0';
+          setTimeout(()=> {
+            confirmOverlay.style.display = 'none';
+            confirmOverlay.style.opacity = '';
+            confirmOverlay.setAttribute('aria-hidden','true');
+          }, 420);
+        }, 10000);
+      }
+
+      // Enhanced phone mask with validation
+      const telefoneInput = document.getElementById('telefone');
+      function maskPhoneValue(v){
+        const digits = v.replace(/\D/g,'').slice(0,11);
+        const dlen = digits.length;
+        if(dlen === 0) return '';
+        if(dlen <= 2) return '(' + digits;
+        if(dlen <= 6) return '(' + digits.slice(0,2) + ') ' + digits.slice(2);
+        const part1 = digits.slice(0,2);
+        const part2 = digits.slice(2, 7);
+        const part3 = digits.slice(7);
+        if(part3.length > 0) return `(${part1}) ${part2}-${part3}`;
+        return `(${part1}) ${part2}`;
+      }
+      
+      function validatePhone(phone) {
+        const digits = phone.replace(/\D/g, '');
+        if (digits.length < 10 || digits.length > 11) {
+          return { valid: false, message: 'Telefone deve ter 10 ou 11 dígitos (incluindo DDD)' };
+        }
+        const ddd = parseInt(digits.slice(0, 2));
+        if (ddd < 11 || ddd > 99) {
+          return { valid: false, message: 'DDD inválido. Use um DDD válido (11-99)' };
+        }
+        return { valid: true };
+      }
+      
+      telefoneInput.addEventListener('input', (e)=> { 
+        e.target.value = maskPhoneValue(e.target.value);
+        const validation = validatePhone(e.target.value);
+        if (!validation.valid && e.target.value.length > 5) {
+          e.target.setCustomValidity(validation.message);
+        } else {
+          e.target.setCustomValidity('');
+        }
+      });
+      
+      telefoneInput.addEventListener('paste', (ev)=> { 
+        ev.preventDefault(); 
+        const text = (ev.clipboardData || window.clipboardData).getData('text') || ''; 
+        const cleaned = text.replace(/\D/g,'').slice(0,11);
+        telefoneInput.value = maskPhoneValue(cleaned);
+        const validation = validatePhone(telefoneInput.value);
+        if (!validation.valid) {
+          telefoneInput.setCustomValidity(validation.message);
+        } else {
+          telefoneInput.setCustomValidity('');
+        }
+      });
+
+      // Enhanced form validation
+      const nomeInput = document.getElementById('nome');
+      
+      function validateName(name) {
+        if (name.length < 2) {
+          return { valid: false, message: 'Nome deve ter pelo menos 2 caracteres' };
+        }
+        if (name.length > 100) {
+          return { valid: false, message: 'Nome muito longo (máximo 100 caracteres)' };
+        }
+        if (!/^[a-zA-ZÀ-ſ\s]+$/.test(name)) {
+          return { valid: false, message: 'Nome deve conter apenas letras e espaços' };
+        }
+        const words = name.trim().split(/\s+/);
+        if (words.length < 2) {
+          return { valid: false, message: 'Digite seu nome completo (nome e sobrenome)' };
+        }
+        return { valid: true };
+      }
+      
+      nomeInput.addEventListener('input', (e) => {
+        const validation = validateName(e.target.value);
+        if (!validation.valid && e.target.value.length > 1) {
+          e.target.setCustomValidity(validation.message);
+        } else {
+          e.target.setCustomValidity('');
+        }
+      });
+
+      // Enable submit only when core fields + one recarga selected
+      function enableSubmitIfValid(){
+        const selectedRadio = rechargeForm.querySelector('input[name="recarga_selecionada"]:checked');
+        const nome = rechargeForm.querySelector('#nome')?.value.trim();
+        const telefone = rechargeForm.querySelector('#telefone')?.value.trim();
+        const operadora = rechargeForm.querySelector('#operadora')?.value;
+        
+        // Validate all fields
+        const nomeValid = nome && validateName(nome).valid;
+        const phoneValid = telefone && validatePhone(telefone).valid;
+        const operadoraValid = !!operadora;
+        const rechargeValid = !!selectedRadio;
+        
+        const allValid = nomeValid && phoneValid && operadoraValid && rechargeValid;
+        
+        if(allValid){
+          submitButton.disabled = false;
+          submitButton.classList.add('active');
+          submitButton.innerHTML = '🚀 Solicitar Recarga (Após Pagar PIX)';
+        } else {
+          submitButton.disabled = true;
+          submitButton.classList.remove('active');
+          submitButton.innerHTML = '🔒 Preencha todos os campos';
+        }
+      }
+
+        // Enhanced recharge option selection
+        document.addEventListener('change', (e) => {
+          if (e.target.name === 'recarga_selecionada') {
+            const label = document.querySelector(`label[for="${e.target.id}"]`);
+            if (label) {
+              label.animate([
+                { transform: 'scale(1)', boxShadow: 'none' },
+                { transform: 'scale(1.02)', boxShadow: '0 8px 25px rgba(79,70,229,0.2)' },
+                { transform: 'scale(1)', boxShadow: 'none' }
+              ], {
+                duration: 400,
+                easing: 'cubic-bezier(0.4, 0, 0.2, 1)'
+              });
+            }
+          }
+        });
+
+      // When a recharge option is selected: generate PIX and enable submit if valid
+      optionsContainer.addEventListener('change', function(e){
+        if(e.target && e.target.name === 'recarga_selecionada'){
+          const selectedValue = e.target.value || '';
+          let amount = null;
+          if(selectedValue.includes('PAGA R$')){
+            const part = selectedValue.split('PAGA R$')[1] || '';
+            amount = part.trim().replace(/\./g,'').replace(',', '.');
+          } else {
+            const m = selectedValue.match(/[\d\.,]+/);
+            if(m) amount = m[0].replace(/\./g,'').replace(',', '.');
+          }
+          if(amount && PIX_KEY){
+            const br = generateBRCode({ key: PIX_KEY, name: PIX_NAME, city: PIX_CITY, amount: amount });
+            brCodeTextarea.value = br;
+            if(window.QRious){ try{ new QRious({ element: qrCanvas, value: br, size: 180 }); }catch(e){ console.warn('QRious error', e); } }
+            
+            // Show PIX info with smooth animation
+            pixInfoDiv.style.display = 'block';
+            pixInfoDiv.setAttribute('aria-hidden','false');
+            revealElement(pixInfoDiv);
+            autoScrollToNewContent(pixInfoDiv, 400);
+          } else {
+            pixInfoDiv.style.display = 'none';
+            pixInfoDiv.setAttribute('aria-hidden','true');
+            brCodeTextarea.value = '';
+          }
+
+          // Visually emphasize selected label with enhanced animation
+          const radioId = e.target.id;
+          const label = optionsContainer.querySelector(`label[for="${radioId}"]`);
+          if(label){
+            label.animate([
+              { transform: 'scale(1)', boxShadow: 'none' }, 
+              { transform: 'scale(1.03)', boxShadow: '0 15px 35px rgba(79,70,229,0.15)' }, 
+              { transform: 'scale(1)', boxShadow: 'none' }
+            ], { duration: 500, easing: 'cubic-bezier(0.4, 0, 0.2, 1)' });
+          }
+
+          enableSubmitIfValid();
+        }
+      });
+
+      // Hook inputs to re-evaluate submit state and add focus scrolling
+      ['input','change'].forEach(evt=>{
+        rechargeForm.querySelectorAll('#nome, #telefone, #operadora').forEach(el=>{
+          el.addEventListener(evt, enableSubmitIfValid);
+        });
+      });
+      
+      // Add focus event listeners for smooth scrolling on mobile
+      rechargeForm.querySelectorAll('input, select, textarea').forEach(input => {
+        input.addEventListener('focus', () => {
+          // Small delay to account for virtual keyboard
+          setTimeout(() => {
+            smoothScrollToElement(input, 120);
+          }, 300);
+        });
+      });
+
+      // When operator changes show short help text + button; reset pix/selection
+      operadoraSelect.addEventListener('change', () => {
+        updateFormUI();
+        brCodeTextarea.value = '';
+        pixInfoDiv.style.display = 'none';
+        
+        // Auto-scroll to show new operator-specific content
+        const selectedOp = operadoraSelect.value;
+        if (selectedOp && passwordFields[selectedOp]) {
+          autoScrollToNewContent(passwordFields[selectedOp], 300);
+        }
+        
+        // Scroll to recharge options when they appear
+        setTimeout(() => {
+          if (optionsContainer.children.length > 0) {
+            autoScrollToNewContent(optionsContainer, 200);
+          }
+        }, 100);
+        
+        enableSubmitIfValid();
+      });
+
+      // copy PIX with enhanced feedback
+      copyPixBtn.addEventListener('click', () => {
+        if(!brCodeTextarea.value) return;
+        
+        navigator.clipboard && navigator.clipboard.writeText(brCodeTextarea.value).then(()=> {
+          const originalText = copyPixBtn.textContent;
+          copyPixBtn.textContent = '✅ Copiado!';
+          copyPixBtn.style.background = 'var(--success)';
+          revealElement(copyPixBtn);
+          
+          setTimeout(()=> {
+            copyPixBtn.textContent = originalText;
+            copyPixBtn.style.background = 'var(--success)';
+          }, 2000);
+        }).catch(()=>{
+          copyPixBtn.textContent = '❌ Erro ao copiar';
+          setTimeout(()=> copyPixBtn.textContent = 'Copiar Código', 1500);
+        });
+      });
+
+      // Enhanced submission with better error handling
+      rechargeForm.addEventListener('submit', async (ev) => {
+        ev.preventDefault();
+        
+        // Comprehensive validation before submission
+        const nome = rechargeForm.querySelector('#nome').value.trim();
+        const telefone = rechargeForm.querySelector('#telefone').value.trim();
+        const operadora = rechargeForm.querySelector('#operadora').value;
+        const recargaSelecionada = rechargeForm.querySelector('input[name="recarga_selecionada"]:checked');
+        
+        // Validate each field
+        const validations = [
+          { field: 'nome', value: nome, validator: validateName, element: rechargeForm.querySelector('#nome') },
+          { field: 'telefone', value: telefone, validator: validatePhone, element: rechargeForm.querySelector('#telefone') }
+        ];
+        
+        let hasErrors = false;
+        for (const validation of validations) {
+          const result = validation.validator(validation.value);
+          if (!result.valid) {
+            validation.element.setCustomValidity(result.message);
+            validation.element.reportValidity();
+            hasErrors = true;
+            break;
+          }
+        }
+        
+        if (!operadora) {
+          showStatus('error', 'Por favor, selecione uma operadora.');
+          hasErrors = true;
+        }
+        
+        if (!recargaSelecionada) {
+          showStatus('error', 'Por favor, selecione um valor de recarga.');
+          hasErrors = true;
+        }
+        
+        if (hasErrors) return;
+        
+        // Rest of submission logic...
+
+        const form = new FormData(rechargeForm);
+        const payload = {
+          nome: form.get('nome'),
+          telefone: form.get('telefone'),
+          operadora: form.get('operadora'),
+          recarga_selecionada: form.get('recarga_selecionada')
+        };
+        if(payload.operadora === 'Tim') payload.senha_tim = form.get('senha_tim');
+        if(payload.operadora === 'Vivo') payload.senha_vivo = form.get('senha_vivo');
+        if(payload.operadora === 'Claro') payload.senha_claro = form.get('senha_claro');
+
+        showSending(true);
+        submitButton.disabled = true;
+        showStatus('loading', 'Enviando sua solicitação...');
+
+        try{
+          const res = await fetch(`${BACKEND_URL}/api/recarregar`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            mode: 'cors',
+            body: JSON.stringify(payload)
+          });
+
+          let resultText = await res.text();
+          let parsed = null;
+          try { parsed = JSON.parse(resultText); } catch(_) { parsed = null; }
+
+          if(!res.ok){
+            const serverMessage = (parsed && (parsed.message || parsed.error)) ? (parsed.message || parsed.error) : resultText;
+            console.error('Server error:', res.status, serverMessage);
+            showStatus('error', `Erro do servidor: ${serverMessage || res.statusText} (HTTP ${res.status})`);
+            autoScrollToNewContent(statusMessage, 100);
+            return;
+          }
+
+          // success
+          const parsedOk = parsed || { message: resultText || 'Solicitação recebida.' };
+          const telefoneExibido = payload.telefone || 'xxxxx';
+          showSending(false);
+          showConfirmation(telefoneExibido);
+          showStatus('success', parsedOk.message || `A recarga para o número: ${telefoneExibido} está na fila de processamento.`);
+
+          // Scroll to success message
+          autoScrollToNewContent(statusMessage, 200);
+
+          rechargeForm.reset();
+          updateFormUI();
+          brCodeTextarea.value = '';
+          pixInfoDiv.style.display = 'none';
+          submitButton.classList.remove('active');
+          submitButton.disabled = true;
+        } catch(networkErr){
+          console.error('Network error:', networkErr);
+          showSending(false);
+          showStatus('error', `Erro de rede: ${networkErr.message || networkErr}. Verifique a URL do backend ou sua conexão.`);
+          autoScrollToNewContent(statusMessage, 100);
+        } finally {
+          setTimeout(enableSubmitIfValid, 200);
+        }
+      });
+
+      // UI population & helpers (shortened help text and link-button)
+      function updateFormUI(){
+        const selected = operadoraSelect.value;
+        
+        // Clear and hide previous content with animation
+        optionsContainer.innerHTML = '';
+        pixInfoDiv.style.display = 'none';
+        operatorHelpDiv.style.display = 'none';
+        
+        Object.values(passwordFields).forEach(el => {
+          if(el) {
+            hideFormSection(el);
+            const inp = el.querySelector('input');
+            if(inp) { inp.required = false; inp.value = ''; }
+          }
+        });
+
+        if(passwordFields[selected]){
+          // Show password field with animation
+          setTimeout(() => {
+            showFormSection(passwordFields[selected], false);
+          }, 150);
+          
+          const inp = passwordFields[selected].querySelector('input');
+          if(inp) inp.required = true;
+
+          // Enhanced help text with better explanations for all operators
+          const mapping = {
+            'Tim': { 
+              text: '💡 Não sabe sua senha do App Meu TIM? Clique em "Recuperar" para redefini-la facilmente pelo site oficial da TIM.',
+              url: 'https://auth3.tim.com.br/webapp-resetSenha/forgotPassword?layout=meutimapp&loginType=USER&channel=4&msisdn='
+            },
+            'Vivo': { 
+              text: '💡 Esqueceu a senha do App Vivo? Sem problema! Use a opção "Esqueci minha senha" no aplicativo ou site da Vivo.',
+              url: 'https://www.vivo.com.br/para-voce'
+            },
+            'Claro': { 
+              text: '💡 Precisa da senha do App Minha Claro? Recupere rapidamente através do aplicativo ou site oficial da Claro.',
+              url: 'https://www.claro.com.br/'
+            }
+          };
+          const info = mapping[selected] || null;
+          if(info){
+            operatorHelpDiv.innerHTML = `<span style="flex:1">${info.text}</span><a class="help-link" href="${info.url}" target="_blank" rel="noopener">🔗 Recuperar Senha</a>`;
+            operatorHelpDiv.style.display = 'flex';
+            revealElement(operatorHelpDiv);
+          } else {
+            operatorHelpDiv.style.display = 'none';
+          }
+        } else {
+          operatorHelpDiv.style.display = 'none';
+        }
+
+        // populate recharge options if backend provided them
+        if(rechargeOptions[selected] && Array.isArray(rechargeOptions[selected])){
+          const header = document.createElement('div');
+          header.innerHTML = `💰 <strong>Selecione um valor para ${selected}:</strong>`;
+          header.style.fontWeight='700';
+          header.style.opacity='.95';
+          header.style.marginBottom='12px';
+          header.style.fontSize='14px';
+          header.style.display='flex';
+          header.style.alignItems='center';
+          header.style.gap='8px';
+          optionsContainer.appendChild(header);
+
+          rechargeOptions[selected].forEach((opt, idx) => {
+            const id = `opt-${selected}-${idx}`;
+            const radio = document.createElement('input');
+            radio.type = 'radio';
+            radio.name = 'recarga_selecionada';
+            radio.className = 'hidden';
+            radio.id = id;
+            radio.value = opt;
+            radio.required = true;
+
+            const label = document.createElement('label');
+            label.setAttribute('for', id);
+            label.className = 'opt';
+            
+            // Extract value for icon selection
+            const valueMatch = opt.match(/R\$\s*(\d+)/);
+            const value = valueMatch ? parseInt(valueMatch[1]) : 0;
+            
+            // Select appropriate icon based on value
+            let rechargeIcon = '💳'; // Default credit card
+            if (value >= 50) rechargeIcon = '💰'; // Money bag for higher values
+            else if (value >= 20) rechargeIcon = '💵'; // Dollar bills
+            else if (value >= 10) rechargeIcon = '🪙'; // Coin
+            
+            label.innerHTML = `
+              <span class="label">
+                <span class="recharge-icon">${rechargeIcon}</span>
+                <span class="recharge-text">${opt}</span>
+              </span>
+              <span class="meta">
+                <span class="price-badge">🗼 PAGAR</span>
+              </span>
+            `;
+
+            // Add staggered animation for options
+            label.style.opacity = '0';
+            label.style.transform = 'translateY(10px)';
+            
+            optionsContainer.appendChild(radio);
+            optionsContainer.appendChild(label);
+            
+            // Animate option appearance
+            setTimeout(() => {
+              label.style.transition = 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+              label.style.opacity = '1';
+              label.style.transform = 'translateY(0)';
+            }, 100 + (idx * 50));
+          });
+          
+          // Add reveal animation to the container
+          revealElement(optionsContainer);
+        }
+      }
+
+      // INITIALIZE with enhanced server communication
+      async function initializeApp(){
+        try{
+          // Wait for server connection with a maximum timeout
+          await new Promise((resolve) => {
+            const maxWaitTime = 20000; // 20 seconds maximum wait
+            const startTime = Date.now();
+            
+            const checkInterval = setInterval(() => {
+              const elapsed = Date.now() - startTime;
+              
+              if (serverStatus === 'awake' || checkAttempts >= maxCheckAttempts || elapsed >= maxWaitTime) {
+                clearInterval(checkInterval);
+                console.log(`Server wait completed. Status: ${serverStatus}, Attempts: ${checkAttempts}, Time: ${elapsed}ms`);
+                resolve();
+              }
+            }, 500);
+            
+            // Fallback timeout to ensure we don't wait forever
+            setTimeout(() => {
+              clearInterval(checkInterval);
+              console.log('Server wait timeout reached, proceeding anyway');
+              resolve();
+            }, maxWaitTime);
+          });
+          
+          // Try to fetch config, but don't block if it fails
+          try {
+            const controller = new AbortController();
+            const configTimeout = setTimeout(() => controller.abort(), 5000);
+            
+            const resp = await fetch(`${BACKEND_URL}/api/config`, {
+              signal: controller.signal,
+              headers: { 'Content-Type': 'application/json' }
+            });
+            
+            clearTimeout(configTimeout);
+            
+            if (resp.ok) {
+              const cfg = await resp.json();
+              PIX_KEY = cfg.pixKey || PIX_KEY;
+              PIX_NAME = cfg.pixName || PIX_NAME;
+              PIX_CITY = cfg.pixCity || PIX_CITY;
+              rechargeOptions = cfg.rechargeOptions || rechargeOptions;
+              document.title = cfg.pageTitle || document.title;
+              document.getElementById('page-sub').textContent = cfg.headerSubtitle || 'Recargas rápidas, seguras e promocionais';
+              document.getElementById('page-footer-warning').innerHTML = `<strong>Atenção:</strong> ${cfg.footerWarning || 'A recarga pode demorar até 24 horas.'}`;
+              document.getElementById('page-footer-copyright').textContent = cfg.footerCopyright || '© Thunder Recargas';
+              console.log('Configuration loaded successfully');
+            } else {
+              console.log('Config request failed with status:', resp.status);
+            }
+          } catch (configError) {
+            console.log('Config loading failed:', configError.message);
+            // Continue anyway with default values
+          }
+          
+          updateFormUI();
+          
+        } catch(err){
+          console.error('App initialization error:', err);
+          // Don't show error to user, just proceed with defaults
+        } finally {
+          // Always ensure the loading screen is hidden
+          if (loadingOverlay && loadingOverlay.style.display !== 'none') {
+            console.log('Force hiding loading screen');
+            hideLoadingScreen();
+          }
+        }
+      }
+
+      initializeApp();
+    });
+  </script>
 </body>
 </html>

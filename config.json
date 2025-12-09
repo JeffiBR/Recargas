@@ -1,0 +1,31 @@
+{
+  "pageTitle": "Thuder Recargas",
+  "headerTitle": "Thuder Recargas",
+  "headerSubtitle": "Recargas promocionais com segurança e PIX",
+  "pixKey": "82999158412",
+  "pixName": "Jeferson",
+  "pixCity": "SAO PAULO",
+  "rechargeOptions": {
+    "Vivo": [
+      "R$35,00 PAGA R$25,00",
+      "R$40,00 PAGA R$38,00",
+      "R$50,00 PAGA R$20,00"
+    ],
+    "Claro": [
+      "R$20,00 PAGA R$15,00",
+      "R$25,00 PAGA R$20,00",
+      "R$30,00 PAGA R$22,00",
+      "R$35,00 PAGA R$25,00",
+      "R$40,00 PAGA R$30,00",
+      "R$50,00 PAGA R$35,00"
+    ],
+    "Tim": [
+      "R$15,00 PAGA R$10,00",
+      "R$20,00 PAGA R$15,00",
+      "R$30,00 PAGA R$20,00",
+      "R$40,00 PAGA R$30,00"
+    ]
+  },
+  "footerWarning": "Atenção: As recargas promocionais podem levar até 24 horas para serem creditadas em sua linha após a confirmação do pagamento.",
+  "footerCopyright": "© 2025 Thuder Recargas. Todos os direitos reservados."
+}

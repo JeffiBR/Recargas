@@ -701,13 +701,34 @@ def admin_criar_produto():
     try:
         data = request.get_json()
         
+        # Validação dos campos obrigatórios
+        if not data:
+            return jsonify({'message': 'Dados não fornecidos.'}), 400
+            
+        nome = data.get('nome')
+        if not nome or not nome.strip():
+            return jsonify({'message': 'O nome do produto é obrigatório.'}), 400
+        
+        preco = data.get('preco')
+        if preco is None:
+            return jsonify({'message': 'O preço do produto é obrigatório.'}), 400
+        
+        try:
+            preco = float(preco)
+        except ValueError:
+            return jsonify({'message': 'O preço deve ser um número válido.'}), 400
+        
+        categoria_id = data.get('categoria_id')
+        if not categoria_id:
+            return jsonify({'message': 'A categoria do produto é obrigatória.'}), 400
+        
         novo_produto = {
-            "nome": data.get('nome'),
-            "descricao": data.get('descricao'),
-            "preco": float(data.get('preco', 0)),
-            "categoria_id": data.get('categoria_id'),
+            "nome": nome.strip(),
+            "descricao": data.get('descricao', '').strip(),
+            "preco": preco,
+            "categoria_id": categoria_id,
             "ativo": data.get('ativo', True),
-            "imagem_url": data.get('imagem_url', ''),
+            "imagem_url": data.get('imagem_url', '').strip(),
             "estoque": data.get('estoque', 0),
             "destaque": data.get('destaque', False),
             "created_at": datetime.now(pytz.timezone('America/Sao_Paulo')).isoformat()
@@ -733,9 +754,24 @@ def admin_atualizar_produto(produto_id):
     try:
         data = request.get_json()
         
-        # Converter preco para float se existir
+        # Validação se está atualizando o nome
+        if 'nome' in data:
+            nome = data.get('nome')
+            if not nome or not nome.strip():
+                return jsonify({'message': 'O nome do produto é obrigatório.'}), 400
+            data['nome'] = nome.strip()
+        
+        if 'descricao' in data:
+            data['descricao'] = data['descricao'].strip()
+        
         if 'preco' in data:
-            data['preco'] = float(data['preco'])
+            try:
+                data['preco'] = float(data['preco'])
+            except ValueError:
+                return jsonify({'message': 'O preço deve ser um número válido.'}), 400
+        
+        if 'imagem_url' in data:
+            data['imagem_url'] = data['imagem_url'].strip()
         
         response = supabase.table(PRODUCTS_TABLE).update(data).eq('id', produto_id).execute()
         
@@ -785,10 +821,18 @@ def admin_criar_categoria():
     try:
         data = request.get_json()
         
+        # Validação dos campos obrigatórios
+        if not data:
+            return jsonify({'message': 'Dados não fornecidos.'}), 400
+            
+        nome = data.get('nome')
+        if not nome or not nome.strip():
+            return jsonify({'message': 'O nome da categoria é obrigatório.'}), 400
+        
         nova_categoria = {
-            "nome": data.get('nome'),
-            "descricao": data.get('descricao', ''),
-            "ativo": True,
+            "nome": nome.strip(),
+            "descricao": data.get('descricao', '').strip(),
+            "ativo": data.get('ativo', True),
             "created_at": datetime.now(pytz.timezone('America/Sao_Paulo')).isoformat()
         }
         
@@ -811,6 +855,16 @@ def admin_atualizar_categoria(categoria_id):
     """Atualiza uma categoria"""
     try:
         data = request.get_json()
+        
+        # Validação se está atualizando o nome
+        if 'nome' in data:
+            nome = data.get('nome')
+            if not nome or not nome.strip():
+                return jsonify({'message': 'O nome da categoria é obrigatório.'}), 400
+            data['nome'] = nome.strip()
+        
+        if 'descricao' in data:
+            data['descricao'] = data['descricao'].strip()
         
         response = supabase.table(CATEGORIAS_TABLE).update(data).eq('id', categoria_id).execute()
         
@@ -946,7 +1000,13 @@ def admin_dashboard_produtos():
                 'total_vendas': 0,
                 'status_counts': {},
                 'top_produtos': [],
-                'vendas_por_dia': []
+                'vendas_por_dia': [],
+                'today_sales': 0,
+                'week_sales': 0,
+                'month_sales': 0,
+                'average_ticket': 0,
+                'total_products': 0,
+                'total_categories': 0
             }), 200
         
         # Total de pedidos
@@ -1009,6 +1069,21 @@ def admin_dashboard_produtos():
         vendas_hoje_response = supabase.table(PEDIDOS_TABLE).select('valor_total').gte('timestamp', hoje_str).lt('timestamp', amanha_str).execute()
         vendas_hoje = sum(float(pedido['valor_total'] or 0) for pedido in vendas_hoje_response.data)
         
+        # Vendas da semana (últimos 7 dias)
+        semana_inicio = hoje - timedelta(days=7)
+        semana_str = semana_inicio.isoformat()
+        vendas_semana_response = supabase.table(PEDIDOS_TABLE).select('valor_total').gte('timestamp', semana_str).lt('timestamp', amanha_str).execute()
+        vendas_semana = sum(float(pedido['valor_total'] or 0) for pedido in vendas_semana_response.data)
+        
+        # Vendas do mês
+        mes_inicio = hoje.replace(day=1)
+        mes_str = mes_inicio.isoformat()
+        vendas_mes_response = supabase.table(PEDIDOS_TABLE).select('valor_total').gte('timestamp', mes_str).lt('timestamp', amanha_str).execute()
+        vendas_mes = sum(float(pedido['valor_total'] or 0) for pedido in vendas_mes_response.data)
+        
+        # Ticket médio
+        average_ticket = total_vendas / total_pedidos if total_pedidos > 0 else 0
+        
         return jsonify({
             'total_pedidos': total_pedidos,
             'total_vendas': total_vendas,
@@ -1017,7 +1092,11 @@ def admin_dashboard_produtos():
             'total_categorias': total_categorias,
             'status_counts': status_counts,
             'top_produtos': top_produtos,
-            'vendas_por_dia': vendas_por_dia
+            'vendas_por_dia': vendas_por_dia,
+            'today_sales': vendas_hoje,
+            'week_sales': vendas_semana,
+            'month_sales': vendas_mes,
+            'average_ticket': average_ticket
         }), 200
         
     except Exception as e:
@@ -1030,7 +1109,11 @@ def admin_dashboard_produtos():
             'total_categorias': 0,
             'status_counts': {},
             'top_produtos': [],
-            'vendas_por_dia': []
+            'vendas_por_dia': [],
+            'today_sales': 0,
+            'week_sales': 0,
+            'month_sales': 0,
+            'average_ticket': 0
         }), 500
 
 # --- ROTA PARA EXPORTAR PEDIDOS DE PRODUTOS ---
